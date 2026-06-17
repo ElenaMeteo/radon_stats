@@ -1,0 +1,5 @@
+*.pdf
+*.jpg
+*.png
+*.pyc
+venv/analyse_radon/json/dict_23_24.json
