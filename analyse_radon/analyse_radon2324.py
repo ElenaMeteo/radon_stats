@@ -10,7 +10,6 @@ et pas par département"""
 
 import numpy as np
 from pathlib import Path
-import json
 
 from fonctions.constantes import *
 
@@ -115,11 +114,11 @@ def main():
     print("Fin de la génération des graphiques de yB en fonction de yA à partir de l'histogramme")
 
     # Fitting par yA moyen de chaque bin
-    dict_fit = dict_fit_yB(par_bin, bins)
+    dict_fit = dict_fit_yB(dict_by_quantiles)
     print("Fin du fitting des yB par yA moyen de chaque bin")
     
     # Graphique des parametres de la distribution gamma en fonction de yA
-    #graph_params_yA(dict_fit, xlabel="yA", ylabel="Paramètres de la distribution gamma", titre="Paramètres de la distribution gamma en fonction de yA")
+    graph_params_yA(dict_fit, xlabel="yA", ylabel="Paramètres de la distribution gamma", titre="Paramètres de la distribution gamma en fonction de yA")
     print("Fin de la génération du graphique des paramètres de la distribution gamma en fonction de yA")
     
 
