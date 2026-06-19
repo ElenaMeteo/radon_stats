@@ -21,7 +21,7 @@ from fonctions.analyse.fichiers_erreur import coord_obt
 from fonctions.analyse.stations_zone import dict_coord_stats
 from fonctions.analyse.docs import docs_dict_yAyB_to_json
 from fonctions.analyse.graphs import graph_yA_yB, graph_hist_equit, graph_params_yA
-from fonctions.analyse.graphs_analyse import exec_graph_dist, graph_eval
+from fonctions.analyse.graphs_analyse import exec_graph_dist, graph_eval, graph_dist_tout_en_1
 from fonctions.analyse.fitting import dict_fit_yB
 
 # Là on va garder nos résultats .csv
@@ -89,8 +89,9 @@ def main():
     print("Fin de la génération de l'histogramme de yB")
 
     # Graphique de yB en fonction du quantile de yA
-    graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
+    #graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
     #exec_graph_dist(dict_by_quantiles)
+    graph_dist_tout_en_1(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB")
     print("Fin de la génération des graphiques de yB en fonction de yA à partir de l'histogramme")
 
     # Fitting par yA moyen de chaque bin

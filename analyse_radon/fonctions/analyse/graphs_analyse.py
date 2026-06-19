@@ -282,6 +282,46 @@ def graph_dist(y, titre, xlabel, ylabel):
     plt.grid()
     plt.show()
 
+def graph_dist_tout_en_1(dict_by_quantiles, titre, xlabel, ylabel):
+    """Trace tous les histogrammes de graph_dist dans une même fenêtre."""
+
+    n_plots = len(dict_by_quantiles)
+    if n_plots == 0:
+        print("Aucun quantile à tracer.")
+        return
+
+    n_cols = int(np.ceil(np.sqrt(n_plots)))
+    n_rows = int(np.ceil(n_plots / n_cols))
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(n_cols * 4, n_rows * 3), squeeze=False)
+    axes_flat = axes.flatten()
+
+    for ax in axes_flat[n_plots:]:
+        ax.set_visible(False)
+
+    for i, (quantile, info) in enumerate(dict_by_quantiles.items()):
+        yB = info.get('yB', [])
+        if isinstance(yB, list):
+            yB = np.concatenate([np.asarray(v) for v in yB if len(v) > 0]) if len(yB) > 0 else np.array([])
+        else:
+            yB = np.asarray(yB)
+
+        ax = axes_flat[i]
+        if yB.size > 0:
+            ax.hist(yB, bins=BINS, weights=np.ones_like(yB)/len(yB), color='orange')
+        else:
+            ax.text(0.5, 0.5, 'Aucune donnée', ha='center', va='center')
+
+        yA_range = info.get('yA_range', '')
+        ax.set_title(f"q={quantile} {yA_range}")
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        ax.grid(True)
+
+    fig.suptitle(titre)
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    plt.show()
+
+
 def exec_graph_dist(dict_by_quantiles):
     """Execute graph_dist pour toutes les classes de yA concernées.
     Graphique de yB en fonction de yA à partir de l'histogramme
@@ -302,7 +342,3 @@ def exec_graph_dist(dict_by_quantiles):
         q = quantile
         graph_dist(yB, titre=f"yB pour yA_range={yA_range} ({q})", xlabel="yB", ylabel="Densité")
 
-
-    # for i in range(len(par_bin)):
-    #     yB_q = par_bin[i]
-    #     yA_q = (bins[i] + bins[i+1]) / 2  # On prend le milieu du bin comme yA_q

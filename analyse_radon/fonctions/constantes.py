@@ -91,4 +91,4 @@ N_VALS = 3 # Une valeur par heure pendant un jour pour chaque yA
 XLIM = 100
 YLIM = 100
 
-N_QUANTILES = 10 # Nombre de quantiles pour la séparation des données
+N_QUANTILES = 4 # Nombre de quantiles pour la séparation des données
