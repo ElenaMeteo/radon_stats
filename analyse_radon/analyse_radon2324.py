@@ -11,8 +11,9 @@ et pas par département"""
 import numpy as np
 from pathlib import Path
 
-from fonctions.constantes import *
+from collections import defaultdict
 
+from fonctions.constantes import *
 from fonctions.analyse.fichiers import lecture_json
 from fonctions.analyse.gamma_data import dict_yAyB_by_quantiles
 from fonctions.analyse.maille import maille_exe, dict_min5, dict_yA_yB
@@ -20,7 +21,7 @@ from fonctions.analyse.fichiers_erreur import coord_obt
 from fonctions.analyse.stations_zone import dict_coord_stats
 from fonctions.analyse.docs import docs_dict_yAyB_to_json
 from fonctions.analyse.graphs import graph_yA_yB, graph_hist_equit, graph_params_yA
-from fonctions.analyse.graphs_analyse import exec_graph_dist
+from fonctions.analyse.graphs_analyse import exec_graph_dist, graph_eval
 from fonctions.analyse.fitting import dict_fit_yB
 
 # Là on va garder nos résultats .csv
@@ -65,28 +66,6 @@ def main():
     dict_by_quantiles = dict_yAyB_by_quantiles(dict_yAyB)
     print(f"\nSeparation par quantiles de yA:")
 
-    # for quantile_name, data in dict_by_quantiles.items():
-    #     yA_min, yA_max = data['yA_range']
-    #     count = data['count']
-    #     print(f"  {quantile_name}: yA in [{yA_min:.4f}, {yA_max:.4f}], {count} elements")
-    
-    # # Sauvegarde des quantiles
-    # dict_quantiles_json = {}
-    # for quantile_name, data in dict_by_quantiles.items():
-    #     yA_min, yA_max = data['yA_range']
-    #     dict_quantiles_json[quantile_name] = {
-    #         'yA_range': [float(yA_min), float(yA_max)],
-    #         'yA_list': [float(yA) for yA in data['yA_list']],
-    #         'yB_list': [np.asarray(yB).tolist() for yB in data['yB_list']],
-    #         'keys': data['keys'],
-    #         'count': data['count']
-    #     }
-    
-    # ad_quantiles = dossier_json / "dict_yAyB_by_quantiles.json"
-    # with open(ad_quantiles, "w", encoding="utf-8") as f:
-    #     json.dump(dict_quantiles_json, f, ensure_ascii=False, indent=2, sort_keys=True)
-    # print(f"Fin de la sauvegarde des quantiles dans {ad_quantiles}")
-
     # Analyse des valeurs yA
     cont_yA = 0
     ref_yA = []
@@ -102,7 +81,7 @@ def main():
     print(f"Nombre total de yA : {cont_yA_all}")
 
     # Scatters des yB en fonction de yA
-    # graph_yA_yB(dict_yAyB, xlabel="yA", ylabel="yB", titre="yB en fonction de yA")
+    graph_yA_yB(dict_yAyB, xlabel="yA", ylabel="yB", titre="yB en fonction de yA")
     print("Fin de la génération du graphique yB en fonction de yA")
 
     # Histogramme de yB
@@ -110,15 +89,16 @@ def main():
     print("Fin de la génération de l'histogramme de yB")
 
     # Graphique de yB en fonction du quantile de yA
-    exec_graph_dist(dict_by_quantiles)
+    graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
+    #exec_graph_dist(dict_by_quantiles)
     print("Fin de la génération des graphiques de yB en fonction de yA à partir de l'histogramme")
 
     # Fitting par yA moyen de chaque bin
-    dict_fit = dict_fit_yB(dict_by_quantiles)
+    #dict_fit = dict_fit_yB(dict_by_quantiles)
     print("Fin du fitting des yB par yA moyen de chaque bin")
     
     # Graphique des parametres de la distribution gamma en fonction de yA
-    graph_params_yA(dict_fit, xlabel="yA", ylabel="Paramètres de la distribution gamma", titre="Paramètres de la distribution gamma en fonction de yA")
+    #graph_params_yA(dict_fit, xlabel="yA", ylabel="Paramètres de la distribution gamma", titre="Paramètres de la distribution gamma en fonction de yA")
     print("Fin de la génération du graphique des paramètres de la distribution gamma en fonction de yA")
     
 

@@ -14,79 +14,89 @@ from matplotlib.gridspec import GridSpec
 
 from ..constantes import *
 from .fitting import fit, diff_best
+from .scores import recap_stats_scores
 
 rng = np.random.default_rng()
 
-def graph_eval(y, titre, dep, compteur_dist, diff_aic, diff_bic, xlabel, ylabel, type, eval, x=None):
+def graph_eval(dict_by_quantiles, titre, xlabel, ylabel, type, eval, x=None, dep = None):
     """ Trace un graphique simple. 
     Une courbe ou un histogramme."""
-    
-    plt.figure()
-    if (type==COURBE):
-        plt.plot(x, y, color='blue')
-        plt.xlim(0, 20)
+
+    compteur_dist = {nom: 0 for nom in DIST.keys()}
+    diff_aic = {nom: [] for nom in DIST.keys()}
+    diff_bic = {nom: [] for nom in DIST.keys()}
+
+    for quantile, info in dict_by_quantiles.items():
         
-    if (type==HIST):
-        print("\n\ndep:", dep)
-        print("moyenne y:", np.mean(y))
-        print(f"ect y:{np.std(y)}")
-
-        q = np.percentile(y, 99)
-        y_bis = y[y <= q] # Les grandes valeurs altèrent les resultats.
-        n, bins, _ = plt.hist(y_bis, bins=BINS, density=True, color='orange')
-    
-        plt.xlim(0, 20)
-
-        # Mise en place des approximations théoriques
-        
-        if (eval == EVAL):
-            # Vecteur de résultats pour comparer dist
-            resultats = []
-            # Évaluation par distribution
-            resultats = fit(resultats, y_bis, dep)
-
-            best = min(resultats, key=lambda x: x["bic"])  # o "p-value", "bic"
-            compteur_dist[best["nom"]] += 1
-            best_aic = best["aic"]
-            best_bic = best["bic"]
-
-            diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats)
-
-            abs_axe = np.linspace(min(y_bis), max(y_bis), len(y_bis))
-            colors = ['blue', 'red', 'green', 'purple', 'black', 'brown', 'cyan']
-
-            for i, res in enumerate(resultats):
-                dist = res["dist"]
-                params = res["params"]
-                nom = res["nom"]
-                
-                try:
-                    pdf = dist.pdf(abs_axe, *params)
-                    if res == best:
-                        label = r"$\bf{" + res["nom"].replace(" ", r"\ ") + \
-                                f"\ (BIC={res['bic']:.2f})" + "}$"
-                    else:
-                        label = f"{res['nom']} (BIC={res['bic']:.2f})"
-                    plt.plot(abs_axe, pdf, color=colors[i % len(colors)], label=label)
-
-                except Exception as e:
-                    print(f"Erreur avec {nom}: {e}")
-
-            plt.title(f"Données et son approximation")
-
+        yB_q = info["yB"]
+        if isinstance(yB_q, list):
+            yB_q = np.concatenate([np.asarray(v) for v in yB_q if len(v) > 0]) if len(yB_q) > 0 else np.array([])
         else:
-            plt.title(titre)
-    
-    if (type == SCT):
-        plt.scatter(x, y, color='red')
-        plt.plot(x, x, color='black')
-    
-    plt.title(titre)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.legend()
-    plt.grid()
-    plt.show()
+            yB_q = np.asarray(yB_q)
+
+
+        plt.figure()
+        if (type==COURBE):
+            plt.plot(x, yB_q, color='blue')
+            plt.xlim(0, 20)
+            
+        if (type==HIST):
+
+            plt.hist(yB_q, bins=BINS, density=True, color='orange')
+
+            # Mise en place des approximations théoriques
+            
+            if (eval == EVAL):
+                # Vecteur de résultats pour comparer dist
+                resultats = []
+                # Évaluation par distribution
+                resultats = fit(resultats, yB_q)
+
+                best = min(resultats, key=lambda x: x["bic"])  # o "p-value", "bic"
+                compteur_dist[best["nom"]] += 1
+                best_aic = best["aic"]
+                best_bic = best["bic"]
+
+                diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats)
+
+                abs_axe = np.linspace(min(yB_q), max(yB_q), len(yB_q))
+                colors = ['blue', 'red', 'green', 'purple', 'black', 'brown', 'cyan']
+
+                for i, res in enumerate(resultats):
+                    dist = res["dist"]
+                    params = res["params"]
+                    nom = res["nom"]
+                    
+                    try:
+                        pdf = dist.pdf(abs_axe, *params)
+                        if res == best:
+                            label = r"$\bf{" + res["nom"].replace(" ", r"\ ") + \
+                                    f"\ (BIC={res['bic']:.2f})" + "}$"
+                        else:
+                            label = f"{res['nom']} (BIC={res['bic']:.2f})"
+                        plt.plot(abs_axe, pdf, color=colors[i % len(colors)], label=label)
+
+                    except Exception as e:
+                        print(f"Erreur avec {nom}: {e}")
+
+                plt.title(f"Données et son approximation")
+
+            else:
+                plt.title(titre)
+        
+        if (type == SCT):
+            plt.scatter(x, y, color='red')
+            plt.plot(x, x, color='black')
+        
+        plt.title(titre)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.legend()
+        plt.grid()
+        plt.show()
+
+    # Recap des statistiques concernant les distributions
+    recap_stats_scores(compteur_dist, diff_aic, diff_bic)
 
 def graph_multi(x, y, titre, titres, xlabel, ylabel, n, type):
     """

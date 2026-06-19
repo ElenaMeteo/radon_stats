@@ -44,7 +44,7 @@ def fit (resultats, y_bis, dep=None):
 
         ll_val = llog(dist, params, y_bis)
 
-        print("params best:", params)
+        # print("params best:", params)
 
         k = len(params)
         try:
@@ -109,8 +109,8 @@ def dict_fit_yB(dict_by_quantiles):
     dict_fit = {}   
 
     for quantile, info in dict_by_quantiles.items():
-        yB_q = info["yB_q"]
-        yA_q = info["yA_q"]
+        yB_q = info["yB"]
+        yA_q = info["yA"]
 
         if len(yB_q) > 0:
             try:

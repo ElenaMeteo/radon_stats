@@ -73,7 +73,7 @@ DIST = {
     # "weibull_max": stats.weibull_max,
     "gamma": stats.gamma,
     # "beta": stats.beta,
-    "log-norm": stats.lognorm
+    # "log-norm": stats.lognorm
 }
 
 # Distance entre 2 points
