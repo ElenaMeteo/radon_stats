@@ -82,3 +82,39 @@ def docs_dict_yAyB_to_json(dict_yAyB, path):
 
     with open(path, mode="w", encoding="utf-8") as write_file:
         json.dump(dict_json, write_file, ensure_ascii=False, indent=2)
+
+
+def docs_dict_by_quantiles_to_json(dict_by_quantiles, path):
+    """Crée un document .json à partir du dictionnaire dict_by_quantiles.
+
+    Exporte les valeurs yA et yB pour chaque quantile.
+    """
+
+    dict_json = {}
+    for quantile, info in dict_by_quantiles.items():
+        yA_list = info.get('yA', [])
+        yB_list = info.get('yB', [])
+
+        yA_serializable = []
+        for yA in yA_list:
+            if isinstance(yA, np.ndarray):
+                yA = yA.item() if yA.size == 1 else yA.tolist()
+            if isinstance(yA, (float, int, np.floating, np.integer)):
+                yA_serializable.append(None if np.isnan(yA) else float(yA))
+            else:
+                yA_serializable.append(yA)
+
+        yB_serializable = []
+        for yB in yB_list:
+            if isinstance(yB, np.ndarray):
+                yB_serializable.append(yB.tolist())
+            else:
+                yB_serializable.append(np.asarray(yB).tolist())
+
+        dict_json[quantile] = {
+            "yA": yA_serializable,
+            "yB": yB_serializable
+        }
+
+    with open(path, mode="w", encoding="utf-8") as write_file:
+        json.dump(dict_json, write_file, ensure_ascii=False, indent=2)

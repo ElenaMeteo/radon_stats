@@ -21,7 +21,11 @@ NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/ne_110m_
 # Data summary_all_peaks
 NOM_SUMMARY = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/data/Summary_all_peaks.csv"
 
+# Chemins généraux
 BASE_DIR = Path(__file__).resolve().parent
+# Dossier graphiques
+
+
 
 ###########
 # ANALYSE #
@@ -71,9 +75,9 @@ DIST = {
     "norm": stats.norm,
     "weibull_min": stats.weibull_min,
     # "weibull_max": stats.weibull_max,
-    "gamma": stats.gamma,
+    # "gamma": stats.gamma,
     # "beta": stats.beta,
-    # "log-norm": stats.lognorm
+    "log-norm": stats.lognorm
 }
 
 # Distance entre 2 points
@@ -91,4 +95,4 @@ N_VALS = 3 # Une valeur par heure pendant un jour pour chaque yA
 XLIM = 100
 YLIM = 100
 
-N_QUANTILES = 4 # Nombre de quantiles pour la séparation des données
+N_QUANTILES = 20 # Nombre de quantiles pour la séparation des données

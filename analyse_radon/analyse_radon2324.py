@@ -19,9 +19,9 @@ from fonctions.analyse.gamma_data import dict_yAyB_by_quantiles
 from fonctions.analyse.maille import maille_exe, dict_min5, dict_yA_yB
 from fonctions.analyse.fichiers_erreur import coord_obt
 from fonctions.analyse.stations_zone import dict_coord_stats
-from fonctions.analyse.docs import docs_dict_yAyB_to_json
+from fonctions.analyse.docs import docs_dict_yAyB_to_json, docs_dict_by_quantiles_to_json
 from fonctions.analyse.graphs import graph_yA_yB, graph_hist_equit, graph_params_yA
-from fonctions.analyse.graphs_analyse import exec_graph_dist, graph_eval, graph_dist_tout_en_1
+from fonctions.analyse.graphs_analyse import exec_graph_dist, graph_eval, graph_dist_tout_en_1, graph_eval_tout_en_1
 from fonctions.analyse.fitting import dict_fit_yB
 
 # Là on va garder nos résultats .csv
@@ -66,6 +66,10 @@ def main():
     dict_by_quantiles = dict_yAyB_by_quantiles(dict_yAyB)
     print(f"\nSeparation par quantiles de yA:")
 
+    ad_dict_yAyB_quant = dossier_json / "dict_yAyB_quantiles.json"
+    docs_dict_by_quantiles_to_json(dict_by_quantiles, ad_dict_yAyB_quant)
+    print(f"Fin de l'écriture de dict_yAyB dans {ad_dict_yAyB_quant}")
+
     # Analyse des valeurs yA
     cont_yA = 0
     ref_yA = []
@@ -81,7 +85,7 @@ def main():
     print(f"Nombre total de yA : {cont_yA_all}")
 
     # Scatters des yB en fonction de yA
-    graph_yA_yB(dict_yAyB, xlabel="yA", ylabel="yB", titre="yB en fonction de yA")
+    # graph_yA_yB(dict_yAyB, xlabel="yA", ylabel="yB", titre="yB en fonction de yA")
     print("Fin de la génération du graphique yB en fonction de yA")
 
     # Histogramme de yB
@@ -89,12 +93,22 @@ def main():
     print("Fin de la génération de l'histogramme de yB")
 
     # Graphique de yB en fonction du quantile de yA
-    #graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
-    #exec_graph_dist(dict_by_quantiles)
-    graph_dist_tout_en_1(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB")
+
+    # exec_graph_dist(dict_by_quantiles)
+    # graph_dist_tout_en_1(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="Signal gamma observé (yB, nSv/h)", ylabel="Fréquence")
+
+    # Fitting par quantile
+
+    # graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
+    graph_eval_tout_en_1(dict_by_quantiles, 
+                         titre="fitting distribution yB en fonction du quantile de yA", 
+                         xlabel="Signal gamma observé (yB, nSv/h)", 
+                         ylabel="Fréquence", 
+                         type=HIST, 
+                         eval=EVAL)
     print("Fin de la génération des graphiques de yB en fonction de yA à partir de l'histogramme")
 
-    # Fitting par yA moyen de chaque bin
+
     #dict_fit = dict_fit_yB(dict_by_quantiles)
     print("Fin du fitting des yB par yA moyen de chaque bin")
     
