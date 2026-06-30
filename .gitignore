@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 venv/
 *.dylib
 *.json
 .DS_Store
+=======
+*.pdf
+*.jpg
+*.png
+*.pyc
+venv/analyse_radon/json/dict_23_24.json
+>>>>>>> d7d739a15665e08488132ee8e57ed27d7da22736
