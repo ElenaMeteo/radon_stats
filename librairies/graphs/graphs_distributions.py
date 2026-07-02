@@ -12,6 +12,42 @@ from ..scores import recap_stats_scores
 
 rng = np.random.default_rng()
 
+def graph_dist(y, titre, xlabel, ylabel):
+    """ Trace un histogramme simple qui sert 
+    de visualisation d'une distribution. """
+
+    plt.figure()
+    plt.hist(y, bins=BINS, weights=np.ones_like(y)/len(y), color='orange')
+    plt.title(titre)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.grid()
+    plt.show()
+
+def exec_graph_dist(dict_by_quantiles):
+    """Execute graph_dist pour toutes les classes de yA concernées.
+    Graphique de yB en fonction de yA à partir de l'histogramme
+     Args:
+        dict_by_quantiles (dict): Dictionnaire des éléments de yB pour chaque quantile
+     Returns:
+        None
+     """
+    for quantile, info in dict_by_quantiles.items():
+        yB = info['yB']
+        # Si yB est une liste de tableaux/itérables, convertir en un array 1D
+        if isinstance(yB, list):
+            yB = np.concatenate([np.asarray(v) for v in yB if len(v) > 0]) if len(yB) > 0 else np.array([])
+        else:
+            yB = np.asarray(yB)
+
+        yA_range = info['yA_range']
+        q = quantile
+        graph_dist(yB, titre=f"yB pour yA_range={yA_range} ({q})", xlabel="yB", ylabel="Densité")
+
+
+# Fonctions d'évaluation des distributions
+##########################################
+
 def graph_eval(dict_by_quantiles, titre, xlabel, ylabel, type, eval, x=None, dep = None):
     """Fais graphique évalué (ou pas) sur une liste de distributions théoriques
      avec souplesse: courbe, histogramme ou scatter
@@ -144,7 +180,18 @@ def graph_multi(x, y, titre, titres, xlabel, ylabel, n, type):
 
 
 def graph_eval_all_peaks(y, titre, xlabel, ylabel, eval):
-    """"""
+    """Fais graphique évalué (ou pas) sur une liste de distributions théoriques
+     avec souplesse: courbe, histogramme ou scatter. Adapté au document
+     regroupant les pics de toutes les stations.
+    Args:
+        y (list or array): Contient les données à analyser
+        titre (string): titre du graphique
+        xlabel (string): titre abscisses
+        ylabel (string): titre ordonnées
+        eval (string): est-ce qu'on réalise l'évaluation
+    Returns:
+        resultats (list): Liste des résultats du fitting si eval est EVAL, sinon None
+    """
     
     plt.figure()
     
@@ -226,35 +273,4 @@ def graph_eval_all_peaks(y, titre, xlabel, ylabel, eval):
 
     return resultats
 
-def graph_dist(y, titre, xlabel, ylabel):
-    """ Trace un histogramme simple qui sert 
-    de visualisation d'une distribution. """
-
-    plt.figure()
-    plt.hist(y, bins=BINS, weights=np.ones_like(y)/len(y), color='orange')
-    plt.title(titre)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.grid()
-    plt.show()
-
-def exec_graph_dist(dict_by_quantiles):
-    """Execute graph_dist pour toutes les classes de yA concernées.
-    Graphique de yB en fonction de yA à partir de l'histogramme
-     Args:
-        dict_by_quantiles (dict): Dictionnaire des éléments de yB pour chaque quantile
-     Returns:
-        None
-     """
-    for quantile, info in dict_by_quantiles.items():
-        yB = info['yB']
-        # Si yB est une liste de tableaux/itérables, convertir en un array 1D
-        if isinstance(yB, list):
-            yB = np.concatenate([np.asarray(v) for v in yB if len(v) > 0]) if len(yB) > 0 else np.array([])
-        else:
-            yB = np.asarray(yB)
-
-        yA_range = info['yA_range']
-        q = quantile
-        graph_dist(yB, titre=f"yB pour yA_range={yA_range} ({q})", xlabel="yB", ylabel="Densité")
 

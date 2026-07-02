@@ -10,7 +10,6 @@ et pas par département"""
 
 import numpy as np
 from pathlib import Path
-
 from collections import defaultdict
 
 from librairies.constantes import *
