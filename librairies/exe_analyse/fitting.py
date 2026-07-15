@@ -8,6 +8,9 @@ from ..constantes import *
 from ..scores import llog, aic, bic
 from .parametres import parms_mu_sigma
 
+# Fitting simple
+################
+
 def fit (resultats, y_bis, dep=None):
     """Fait le fitting pour chaque distribution
     dans la liste de possibilités DIST. Écrit un 
@@ -151,3 +154,6 @@ def dict_fit_yB(dict_by_quantiles):
             print(f"Warning: bin {quantile} is empty, skipping fit.")
 
     return dict_fit
+
+# Fitting double 
+

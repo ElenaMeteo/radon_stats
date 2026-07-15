@@ -96,3 +96,4 @@ XLIM = 100
 YLIM = 100
 
 N_QUANTILES = 20 # Nombre de quantiles pour la séparation des données
+N_DIST = 2 # Nombre de distributions pour le fitting multiple
