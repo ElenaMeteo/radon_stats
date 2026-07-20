@@ -13,8 +13,8 @@ from scipy.optimize import minimize
 from scipy.special import softmax
 from scipy.stats import kstest
 
-from constantes import *
-from scores import llog_pdf, llog, aic, bic, stats_scores_fittings
+from ..constantes import *
+from ..eval.scores import llog_pdf, llog, aic, bic, stats_scores_fittings
 
 #-------------- Fitting simple (une distribution) --------------
 ################################################################
@@ -85,13 +85,22 @@ class FittingSimple:
             return -np.log(mixture+eps).mean()
 
         # Paramètres initiaux
-        n_free = n + (1 if fit_loc else 0) + 1  # shapes + loc opcional + scale
-        initial_params = np.ones(n_free)
+        data_min = np.min(self.data)
+        data_std = np.std(self.data)
+
+        initial_shapes = np.ones(n)  # init shapes
+        initial_loc = data_min - 1e-3 if fit_loc else 0  # init loc en dessous du minimum
+        initial_scale = data_std if data_std > 0 else 1.0 # init scale
+
+        if fit_loc:
+            initial_params = np.concatenate([initial_shapes, [initial_loc, initial_scale]])
+        else:
+            initial_params = np.concatenate([initial_shapes, [initial_scale]])
 
         # Bornes pour l'optimisation
         bounds = [(1e-3, None)] * n  # shapes > 0
         if fit_loc:
-            bounds += [(None, None)]
+            bounds += [(None, None)] 
         bounds += [(1e-3, None)]  # scale > 0
 
         # Optimisation des paramètres
@@ -102,7 +111,8 @@ class FittingSimple:
             shapes, loc, scale = unpack(result.x)
             self.fitted_params_simple_manuel = {"shapes": list(shapes), "loc": loc, "scale": scale}
         else:
-            raise RuntimeError("Fit simple manuel failed: Optimization failed")
+            print(f"Erreur fitting simple manuel pour {self.dist.name}: {result.message}")
+            self.fitted_params_simple_manuel = None
 
     def get_fitted_params(self) -> dict:
         """Retourne les paramètres ajustés pour les 
@@ -153,7 +163,7 @@ class FittingDouble:
             # Sans loc sur la pdf
             mixture += self.weights[i] * self.dist.pdf(x, *self.shapes[i], scale=self.scales[i])
             # Avec loc sur la pdf
-            # mixture += self.weights[i] * self.dist.pdf(x, *self.shapes[i], locs=self.locs[i], scale=self.scales[i])
+            # mixture += self.weights[i] * self.dist.pdf(x, *self.shapes[i], loc=self.locs[i], scale=self.scales[i])
         return mixture
 
     # Calcul de la vraisemblance pour optimisation
@@ -356,7 +366,7 @@ class Scores:
 #-------------- Fonctions Adjaçantes aux Classes --------------
 ###############################################################
 
-def fitting_simple_et_double(yB):
+def fitting_simple_et_double(yB:np.ndarray):
     """ Fait le fitting pour les distributions simples et doubles
     pour un quantile donné. On retourne un dictionnaire avec les 
     paramètres ajustés pour les différents types de fitting.
@@ -370,33 +380,54 @@ def fitting_simple_et_double(yB):
     # Fitting simple
     resultats_fitting = {}
 
+    print("Dans la boucle\n")
+
     for nom_dist, dist in DIST.items():
+
+        print(f"Essai pour {nom_dist}\n")
 
         # Fitting simple et double
         fitting_simple = FittingSimple(yB, dist)
+        print("Init fitting simple fini")
         fitting_double = FittingDouble(yB, dist, N_DIST)
+        print("Init fitting double fini")
+
 
         fitting_simple.fit_simple_auto()
+        print("Fitting simple automatique fini")
         fitting_simple.fit_simple_manuel()
+        print("Fitting simple manuel fini")
         fitting_double.fit_double()
+        print("Fitting double fin")
 
         # Structure des paramètres ajustés
         params = {}
 
         params["simple"] = fitting_simple.get_fitted_params()
+        print("Obtention paramètres simples")
         params["double"] = fitting_double.get_fitted_params()
+        print("Obtention paramètres doubles")
+
         
         # Évaluation des distributions
 
         stats_du_fit = Scores(yB, dist, nom_dist, params)
+        print("Init scores fini")
 
         stats_du_fit.scores_simple_auto()
+        print("Scores simple automatique fini")
         stats_du_fit.scores_simple_manuel()
+        print("Scores simple manuel fini")
         stats_du_fit.scores_double()
+        print("Scores double fini")
+
 
         # Recap du fitting et evaluation
         resultats_fitting[nom_dist] = stats_du_fit.get_eval()
+        print("Résultats ajoutés au dictionnaire\n")
 
+    print("Boucle finie!\n")
+    print("Résultats:", resultats_fitting)
     # Statistiques sur nos résultats
     # stats_scores_fittings(resultats_fitting)  # On peut appeler cette fonction ici
 

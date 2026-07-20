@@ -7,11 +7,11 @@ multiples graphiques qui doivent être dessinés dans la
 même fenêtre"""
 
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 from ..constantes import *
-from ..exe_analyse.fitting import fit, diff_best
-from ..scores import recap_stats_scores
+from ..exe_analyse.fitting import fit
+from ..eval.scores import diff_best, recap_stats_scores
 
 def graph_dist_tout_en_1(dict_by_quantiles, titre, xlabel, ylabel):
     """Trace tous les histogrammes de graph_dist dans une même fenêtre."""

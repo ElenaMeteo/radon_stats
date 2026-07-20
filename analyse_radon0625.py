@@ -13,7 +13,7 @@ from pathlib import Path
 from librairies.constantes import *
 from librairies.graphs.graphs_distributions import graph_carte
 from librairies.documents.fichiers import lecture
-from librairies.scores import recap_stats_scores
+from librairies.eval.scores import recap_stats_scores
 from librairies.documents.docs import doc_scores, docs_distances 
 from librairies.fonctions_main import distrib_par_dep, lecture_bloc, scores_par_dep, infos_carte
 

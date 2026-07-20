@@ -7,19 +7,19 @@ from scipy import stats
 from pathlib import Path
 
 # Data json
-NOM_DATA_23 = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/json/ad_all23/adresses_mac.json"
-NOM_DATA_24 = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/json/ad_all24/adresses_mac.json"
-NOM_DATA_2324 = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/json/dict_23_24.json"
-NOM_DATA_06_25 = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/json/ad_juin25/adresses_mac_min5.json"
-# NOM_DATA = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/analyse_radon/json/adresses.json"
-AD_DATA_JSON = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/json"
+NOM_DATA_23 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all23/adresses_mac_min5.json"
+NOM_DATA_24 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all24/adresses_mac_min5.json"
+NOM_DATA_2324 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/dict_23_24.json"
+NOM_DATA_06_25 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_juin25/adresses_mac_min5.json"
+# NOM_DATA = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/json/adresses.json"
+AD_DATA_JSON = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json"
 
 # Data geopandas
-NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/ne_110m_admin_0_countries.shp"
-# NOM_CARTE = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/analyse_radon/ne_110m_admin_0_countries.shp"
+NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"
+# NOM_CARTE = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/ne_110m_admin_0_countries.shp"
 
 # Data summary_all_peaks
-NOM_SUMMARY = "/Users/elena/Documents/These/GitHub/These_MF/analyse_radon/data/Summary_all_peaks.csv"
+NOM_SUMMARY = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/data/Summary_all_peaks.csv"
 
 # Chemins généraux
 BASE_DIR = Path(__file__).resolve().parent

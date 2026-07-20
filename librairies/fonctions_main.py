@@ -5,7 +5,7 @@ import numpy as np
 
 from .constantes import *
 from .graphs.graphs_distributions import graph_eval
-from .scores import brier
+from .eval.scores import brier
 from .maillage_et_stations.distance import coord
 from .exe_analyse.gamma_data import dict_lecture, pic_gamma
 from .documents.fichiers import dict_all

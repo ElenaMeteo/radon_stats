@@ -1,0 +1,11 @@
+
+{
+    "adresses": [
+        {
+            "dep": 74,
+            "AD_74_0": "/home/solacavae/Documents/naTech/data/reference/prod/Timeseries/GammaDoseRate_sheets/ANNECY_74_AGG_CP_gamma.csv",
+            "AD_74_1": "/home/solacavae/Documents/naTech/data/reference/prod/Timeseries/GammaDoseRate_sheets/AIGUILLE-DU-MIDI_74_SOM_CP_gamma.csv"
+        }
+        ]
+}
+

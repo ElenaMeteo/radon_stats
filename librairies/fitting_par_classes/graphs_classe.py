@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 from ..constantes import *
 from securite import check_vecteur_vide, check_vecteur_nan
-from scores import stats_scores_fittings
+from librairies.eval.scores import stats_scores_fittings
 
 class Graphs: 
 

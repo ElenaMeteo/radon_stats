@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
 from ..constantes import *
-from ..exe_analyse.fitting import fit, diff_best
-from ..scores import recap_stats_scores
+from ..exe_analyse.fitting import fit
+from ..eval.scores import diff_best, recap_stats_scores
 
 rng = np.random.default_rng()
 

@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from ..constantes import *
-from ..scores import brier
+from ..eval.scores import brier
 from ..documents.fichiers import lecture_col
 
 def lecture_csv(adresse):

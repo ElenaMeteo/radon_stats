@@ -28,6 +28,8 @@ from librairies.graphs.graphs_yA import graph_yA_yB, graph_hist_equit, graph_par
 from librairies.graphs.graphs_distributions import exec_graph_dist, graph_eval
 from librairies.graphs.graphs_tout_en_1 import graph_dist_tout_en_1, graph_eval_tout_en_1
 
+from librairies.fitting_par_classes.fitting_classe import fitting_simple_et_double
+
 # Là on va garder nos résultats .csv
 dossier = Path(__file__).parent
 dossier_docs = dossier / "docs"
@@ -105,13 +107,26 @@ def main():
     print("Fin de la génération des graphiques de yB en fonction de yA à partir de l'histogramme")
 
     # Fitting par quantile
+    ######################
+
     # graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
-    graph_eval_tout_en_1(dict_by_quantiles, 
-                         titre="Fitting distribution yB en fonction du quantile de yA", 
-                         xlabel="Signal gamma observé (yB, nSv/h)", 
-                         ylabel="Fréquence", 
-                         type=HIST, 
-                         eval=EVAL)
+    # graph_eval_tout_en_1(dict_by_quantiles, 
+    #                      titre="Fitting distribution yB en fonction du quantile de yA", 
+    #                      xlabel="Signal gamma observé (yB, nSv/h)", 
+    #                      ylabel="Fréquence", 
+    #                      type=HIST, 
+    #                      eval=EVAL)
+    
+    # CODE FAIT AVEC DES CLASSES
+
+    for ref, values in dict_by_quantiles.items():
+        yB = values['yB']
+        yB_flat = np.concatenate(yB).astype(float)
+        print(f"\nEssai triple fitting avec {ref}\n\n")
+        fitting_simple_et_double(yB_flat)
+
+
+
     #dict_fit = dict_fit_yB(dict_by_quantiles)
     print("Fin du fitting des yB par yA moyen de chaque bin")
     

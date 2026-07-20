@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import kstest, gamma
 
 from ..constantes import *
-from ..scores import llog, aic, bic
+from ..eval.scores import llog, aic, bic
 from .parametres import parms_mu_sigma
 
 # Fitting simple
@@ -82,34 +82,6 @@ def fit (resultats, y_bis, dep=None):
         })
     return resultats
 
-def diff_best (best_aic, best_bic, diff_aic, diff_bic, resultats):
-    """Calcule les différences en pourcentage entre les scores AIC et BIC 
-    de chaque distribution et les meilleurs scores.
-    
-    Args:
-        best_aic (float): le meilleur score AIC trouvé.
-        best_bic (float): le meilleur score BIC trouvé.
-        diff_aic (dict): dictionnaire où on stocke les différences en pourcentage 
-            pour l'AIC, indexé par le nom de la distribution.
-        diff_bic (dict): dictionnaire où on stocke les différences en pourcentage 
-            pour le BIC, indexé par le nom de la distribution.
-        resultats (list): liste de dictionnaires contenant les résultats du fitting 
-            pour chaque distribution.
-    
-    Returns:
-        None: modifie en place les dictionnaires diff_aic et diff_bic.
-    """
-    for res in resultats:
-        nom = res["nom"]
-                
-                # Eviter division par 0
-        if best_aic != 0:
-            diff_pct_aic = (res["aic"] - best_aic) / abs(best_aic) * 100
-            diff_aic[nom].append(diff_pct_aic)
-
-        if best_bic != 0:
-            diff_pct_bic = (res["bic"] - best_bic) / abs(best_bic) * 100
-            diff_bic[nom].append(diff_pct_bic)
 
 def fit_yB(yB_q):
     """Fait un fitting des yB quantiles pour un yA donné

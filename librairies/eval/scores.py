@@ -3,8 +3,7 @@ qui vont évaluer nos données avec des scores"""
 
 import numpy as np
 
-from .constantes import *
-from exe_analyse.fitting import diff_best
+from ..constantes import *
 
 def brier(prev, obs):
     """ - Brier Score: note notre efficacité"""
@@ -34,6 +33,8 @@ def brier(prev, obs):
 
     return brier_score, fp, fn
 
+# ---------------------------------------------------
+
 def llog_pdf(pdf_vals: np.ndarray, eps: float = 1e-8) -> float:
     """ Vraisemblence a partir de valeurs de pdf déjà évalués."""
     return np.sum(np.log(pdf_vals + eps))
@@ -48,6 +49,39 @@ def aic(ll, k) -> float:
 
 def bic(ll, k, n) -> float:
     return k*np.log(n) - 2*ll
+
+# ---------------------------------------------------
+
+def diff_best (best_aic, best_bic, diff_aic, diff_bic, resultats):
+    """Calcule les différences en pourcentage entre les scores AIC et BIC 
+    de chaque distribution et les meilleurs scores.
+    
+    Args:
+        best_aic (float): le meilleur score AIC trouvé.
+        best_bic (float): le meilleur score BIC trouvé.
+        diff_aic (dict): dictionnaire où on stocke les différences en pourcentage 
+            pour l'AIC, indexé par le nom de la distribution.
+        diff_bic (dict): dictionnaire où on stocke les différences en pourcentage 
+            pour le BIC, indexé par le nom de la distribution.
+        resultats (list): liste de dictionnaires contenant les résultats du fitting 
+            pour chaque distribution.
+    
+    Returns:
+        None: modifie en place les dictionnaires diff_aic et diff_bic.
+    """
+    for res in resultats:
+        nom = res["nom"]
+                
+                # Eviter division par 0
+        if best_aic != 0:
+            diff_pct_aic = (res["aic"] - best_aic) / abs(best_aic) * 100
+            diff_aic[nom].append(diff_pct_aic)
+
+        if best_bic != 0:
+            diff_pct_bic = (res["bic"] - best_bic) / abs(best_bic) * 100
+            diff_bic[nom].append(diff_pct_bic)
+
+# ---------------------------------------------------
 
 def stats_scores_fittings(resultats):
     """ Calcule les scores AIC et BIC pour chaque distribution et
