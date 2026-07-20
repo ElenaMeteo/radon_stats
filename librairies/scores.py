@@ -4,6 +4,7 @@ qui vont évaluer nos données avec des scores"""
 import numpy as np
 
 from .constantes import *
+from exe_analyse.fitting import diff_best
 
 def brier(prev, obs):
     """ - Brier Score: note notre efficacité"""
@@ -33,14 +34,37 @@ def brier(prev, obs):
 
     return brier_score, fp, fn
 
-def llog(dist, params, data):
-    return np.sum(dist.logpdf(data, *params))
+def llog(dist, params, data, eps=1e-8):
+    pdf_vals = dist.pdf(data, *params)
+    return np.sum(np.log(pdf_vals + eps))
 
 def aic(ll, k):
     return 2*k - 2*ll
 
 def bic(ll, k, n):
     return k*np.log(n) - 2*ll
+
+def stats_scores_fittings(resultats):
+    """ Calcule les scores AIC et BIC pour chaque distribution et
+    détermine la meilleure distribution selon ces scores. Fais une
+    statistique sur les comparaisons relatives entre les distributions. 
+    Args:
+        resultats (list): Liste de dictionnaires contenant les résultats 
+        du fitting pour chaque distribution """
+
+    compteur_dist = {nom: 0 for nom in DIST.keys()}
+    diff_aic = {nom: [] for nom in DIST.keys()}
+    diff_bic = {nom: [] for nom in DIST.keys()}
+
+    best = min(resultats, key=lambda x: x['bic'])
+    compteur_dist[best['nom']] += 1
+    best_aic = best['aic']
+    best_bic = best['bic']
+
+    diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats)
+    recap_stats_scores(compteur_dist, diff_aic, diff_bic)
+
+    return best
 
 def recap_stats_scores(compteur_dist, diff_aic, diff_bic):
     print("\n\nMeilleures distributions:", dict(compteur_dist))

@@ -107,7 +107,7 @@ def main():
     # Fitting par quantile
     # graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
     graph_eval_tout_en_1(dict_by_quantiles, 
-                         titre="fitting distribution yB en fonction du quantile de yA", 
+                         titre="Fitting distribution yB en fonction du quantile de yA", 
                          xlabel="Signal gamma observé (yB, nSv/h)", 
                          ylabel="Fréquence", 
                          type=HIST, 
@@ -115,7 +115,7 @@ def main():
     #dict_fit = dict_fit_yB(dict_by_quantiles)
     print("Fin du fitting des yB par yA moyen de chaque bin")
     
-    # Graphique des parametres de la distribution gamma en fonction de yA
+    # Graphique des paramètres de la distribution gamma en fonction de yA
     #graph_params_yA(dict_fit, xlabel="yA", ylabel="Paramètres de la distribution gamma", titre="Paramètres de la distribution gamma en fonction de yA")
     print("Fin de la génération du graphique des paramètres de la distribution gamma en fonction de yA")
     
