@@ -34,14 +34,19 @@ def brier(prev, obs):
 
     return brier_score, fp, fn
 
-def llog(dist, params, data, eps=1e-8):
+def llog_pdf(pdf_vals: np.ndarray, eps: float = 1e-8) -> float:
+    """ Vraisemblence a partir de valeurs de pdf déjà évalués."""
+    return np.sum(np.log(pdf_vals + eps))
+
+def llog(dist, params:np.ndarray, data, eps:float=1e-8) -> float:
+    """ Vraisemblence à partir de la distribution et ses paramètres """
     pdf_vals = dist.pdf(data, *params)
     return np.sum(np.log(pdf_vals + eps))
 
-def aic(ll, k):
+def aic(ll, k) -> float:
     return 2*k - 2*ll
 
-def bic(ll, k, n):
+def bic(ll, k, n) -> float:
     return k*np.log(n) - 2*ll
 
 def stats_scores_fittings(resultats):

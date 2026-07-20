@@ -14,7 +14,7 @@ from scipy.special import softmax
 from scipy.stats import kstest
 
 from constantes import *
-from scores import llog, aic, bic, stats_scores_fittings
+from scores import llog_pdf, llog, aic, bic, stats_scores_fittings
 
 #-------------- Fitting simple (une distribution) --------------
 ################################################################
@@ -41,7 +41,7 @@ class FittingSimple:
         try:
             # Calcul des paramètres ajustés pour le fitting automatique
             params = self.dist.fit(self.data)
-            self.fitted_params_simple_auto = params
+            # self.fitted_params_simple_auto = params
 
             # Structure de lecture pour les graphiques
             shapes = params[:self.n_shapes]
@@ -58,7 +58,12 @@ class FittingSimple:
         
     def fit_simple_manuel(self, fit_loc=True) -> None:
         """ Fait le fitting pour les distributions simples avec des paramètres
-        manuels en optimizant la vraisemblance. """
+        manuels en optimizant la vraisemblance. 
+
+        Args: 
+            fit_loc (bool): Paramètre qui détermine si on prend en compte 
+            la moyenne dans le fitting. De base on va toujours le prendre en compte 
+            sauf demande du contraire."""
 
         # Nombre de paramètres de la distribution
         n = self.n_shapes
@@ -127,6 +132,7 @@ class FittingDouble:
         # Paramètres ajustés
         self.weights = np.ones(n_components) / n_components
         self.shapes = np.ones((n_components, self.n_shapes)) # Matrice en fonction du nombre de dist et de shapes
+        self.locs = np.zeros(n_components)
         self.scales = np.ones(n_components)
         # Paramètres ajustés
         self.fitted_params_double = None
@@ -136,37 +142,50 @@ class FittingDouble:
         n_c, n_s = self.n_components, self.n_shapes
         logits = params[:n_c]
         shapes = params[n_c : n_c + n_c*n_s].reshape(n_c, n_s)
-        scales = params[n_c + n_c*n_s:]
-        return softmax(logits), shapes, scales
+        locs   = params[n_c + n_c*n_s : n_c + n_c*n_s + n_c]
+        scales = params[n_c + n_c*n_s + n_c :]
+        return softmax(logits), shapes, locs, scales
     
     # Mélange des deux pdf's en fonction des poids
     def _pdf(self, x:np.ndarray) -> np.ndarray:
         mixture = np.zeros_like(x, dtype=float)
         for i in range(self.n_components):
+            # Sans loc sur la pdf
             mixture += self.weights[i] * self.dist.pdf(x, *self.shapes[i], scale=self.scales[i])
+            # Avec loc sur la pdf
+            # mixture += self.weights[i] * self.dist.pdf(x, *self.shapes[i], locs=self.locs[i], scale=self.scales[i])
         return mixture
 
     # Calcul de la vraisemblance pour optimisation
     def _negative_log_likelihood(self, params: np.ndarray, data: np.ndarray) -> float:
-        self.weights, self.shapes, self.scales = self._unpack(params)
+        self.weights, self.shapes, self.locs, self.scales = self._unpack(params)
         eps = 1e-8
         return -np.log(self._pdf(data) + eps).mean()
 
-    def fit_double(self):
+    def fit_double(self) : # -> paramètres
         """Fait le fitting pour les distributions doubles. """
         n_c, n_s = self.n_components, self.n_shapes
         initial_params = np.concatenate([
-            np.log(self.weights),
-            (np.ones(n_c * n_s) + np.random.uniform(0, 0.01, n_c * n_s)),
-            np.ones(n_c) + np.random.uniform(0, 0.01, n_c),
+            np.log(self.weights), # weights
+            (np.ones(n_c * n_s) + np.random.uniform(0, 0.01, n_c * n_s)), # shapes
+            np.zeros(n_c) + np.random.uniform(-0.01, 0.01, n_c), # les locs commencent proches de 0
+            np.ones(n_c) + np.random.uniform(0, 0.01, n_c), # scales
         ])
-        bounds = [(None, None)]*n_c + [(1e-3, None)]*(n_c*n_s) + [(1e-3, None)]*n_c
 
-        result = minimize(self._negative_log_likelihood, initial_params, args=(self.data,), bounds=bounds)
+        bounds = (
+        [(None, None)] * n_c            # logits
+        + [(1e-3, None)] * (n_c*n_s)    # shapes > 0
+        + [(None, None)] * n_c          # locs libres
+        + [(1e-3, None)] * n_c          # scales > 0
+        )
+
+        # result['x'] contient les parametres optimisés dans le même ordre que "initial_params"
+        result = minimize(self._negative_log_likelihood, initial_params, 
+                          args=(self.data,), bounds=bounds)
         print('Success?', result['success'])
 
-        self.weights, self.shapes, self.scales = self._unpack(result['x'])
-        return self.weights, self.shapes, self.scales
+        self.weights, self.shapes, self.locs, self.scales = self._unpack(result['x'])
+        return self.weights, self.shapes, self.locs, self.scales
 
     def get_fitted_params(self) -> dict:
         """Retourne les paramètres ajustés pour le 
@@ -174,6 +193,7 @@ class FittingDouble:
         self.fitted_params_double = {
             "weights": self.weights,
             "shapes": self.shapes,   # array (n_components, n_shapes)
+            "locs": self.locs,
             "scales": self.scales,
         }
         return self.fitted_params_double
@@ -227,11 +247,11 @@ class Scores:
         self.all_stats = None
 
     # Éxecution des calculs
-    def _calcul_scores_simple (self, parametres: dict) -> dict:
+    def _calcul_scores_simple (self, parametres: dict, fit_loc=True) -> dict:
         """ Processus de calcul des scores commun
         à toutes les méthodes """
 
-        flat_params = (*parametres["shapes"], parametres["loc"], parametres["scale"]) # format de parametres en liste
+        flat_params = (*parametres["shapes"], parametres["loc"] if fit_loc==True else None, parametres["scale"]) # format de parametres en liste
         n_params = len(flat_params)
 
         self.ll_val = llog(self.dist, flat_params, self.data, eps=1e-8)
@@ -257,23 +277,35 @@ class Scores:
     def _calcul_scores_double(self) -> dict:
         """ Lance l'algo pour la partie double """
         parametres = self.params["double"]
-        weights, shapes, scales = parametres["weights"], parametres["shapes"], parametres["scales"]
+        weights, shapes, locs, scales = (
+            parametres["weights"], parametres["shapes"], 
+            parametres["locs"], parametres["scales"]
+        )
 
         def mixture_pdf(x):
             return sum(
+                # pdf sans loc
                 weights[i] * self.dist.pdf(x, *shapes[i], scale=scales[i])
+                # pdf avec loc
+                # weights[i] * self.dist.pdf(x, *shapes[i], loc=locs[i], scale=scales[i])
                 for i in range(len(weights))
             )
 
         def mixture_cdf(x):
             return sum(
+                # cdf sans loc
                 weights[i] * self.dist.cdf(x, *shapes[i], scale=scales[i])
+                # cdf avec loc
+                # weights[i] * self.dist.cdf(x, *shapes[i], loc=locs[i], scale=scales[i])
                 for i in range(len(weights))
             )
+        
+        self.ll_val = llog_pdf(mixture_pdf(self.data))
 
-        eps = 1e-8
-        self.ll_val = np.log(mixture_pdf(self.data) + eps).sum() 
+        # n_params sans loc
         n_params = len(weights) - 1 + shapes.size + len(scales)
+        # n_params avec loc
+        # n_params = len(weights) - 1 + shapes.size + len(locs) + len(scales)
         self.aic_val = aic(self.ll_val, n_params)
         self.bic_val = bic(self.ll_val, n_params, len(self.data))
 
