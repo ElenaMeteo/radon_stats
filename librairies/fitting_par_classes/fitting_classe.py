@@ -15,6 +15,13 @@ from scipy.stats import kstest
 
 from ..constantes import *
 from ..eval.scores import llog_pdf, llog, aic, bic, stats_scores_fittings
+from ..documents.docs import docs_dict_params
+
+# Là on va garder nos résultats .csv
+dossier = Path(__file__).parent.parent
+dossier_docs = dossier / "docs"
+dossier_json = dossier / "json"
+
 
 #-------------- Fitting simple (une distribution) --------------
 ################################################################
@@ -89,7 +96,8 @@ class FittingSimple:
         data_std = np.std(self.data)
 
         initial_shapes = np.ones(n)  # init shapes
-        initial_loc = data_min - 1e-3 if fit_loc else 0  # init loc en dessous du minimum
+        initial_loc = data_min - 0.1 * data_std if fit_loc else 0
+        # initial_loc = data_min - 1e-3 if fit_loc else 0  # init loc en dessous du minimum
         initial_scale = data_std if data_std > 0 else 1.0 # init scale
 
         if fit_loc:
@@ -100,11 +108,13 @@ class FittingSimple:
         # Bornes pour l'optimisation
         bounds = [(1e-3, None)] * n  # shapes > 0
         if fit_loc:
-            bounds += [(None, None)] 
+            bounds += [(None, data_min - 1e-6)] 
         bounds += [(1e-3, None)]  # scale > 0
 
         # Optimisation des paramètres
-        result = minimize(log_likelihood, initial_params, bounds=bounds, method='L-BFGS-B')
+        result = minimize(
+            log_likelihood, initial_params, bounds=bounds, method='L-BFGS-B',
+            options={'maxiter':1000, 'ftol':1e-12, 'gtol':1e-8})
 
         # Structure de lecture pour les graphiques
         if result.success:
@@ -366,7 +376,7 @@ class Scores:
 #-------------- Fonctions Adjaçantes aux Classes --------------
 ###############################################################
 
-def fitting_simple_et_double(yB:np.ndarray):
+def fitting_simple_et_double(yB:np.ndarray, dossier_json) -> dict:
     """ Fait le fitting pour les distributions simples et doubles
     pour un quantile donné. On retourne un dictionnaire avec les 
     paramètres ajustés pour les différents types de fitting.
@@ -395,7 +405,9 @@ def fitting_simple_et_double(yB:np.ndarray):
 
         fitting_simple.fit_simple_auto()
         print("Fitting simple automatique fini")
+        # fit_loc = (nom_dist != "weibull_min") # La méthode manuelle ne marche pas avec loc et weibull
         fitting_simple.fit_simple_manuel()
+        # fitting_simple.fit_simple_manuel(fit_loc=fit_loc)
         print("Fitting simple manuel fini")
         fitting_double.fit_double()
         print("Fitting double fin")
@@ -408,6 +420,10 @@ def fitting_simple_et_double(yB:np.ndarray):
         params["double"] = fitting_double.get_fitted_params()
         print("Obtention paramètres doubles")
 
+        # Enregistrement du dictionnaire
+
+        ad_dict_params = dossier_json / "dict_params_dist_et_quant" 
+        docs_dict_params(params, ad_dict_params) #! fonction pas encore écrite
         
         # Évaluation des distributions
 
@@ -424,7 +440,15 @@ def fitting_simple_et_double(yB:np.ndarray):
 
         # Recap du fitting et evaluation
         resultats_fitting[nom_dist] = stats_du_fit.get_eval()
+        """ La structure des résultats est la suivante:
+        resultats_fitting = {
+            "gamma":   {"simple_auto": {...},  "double": {...}}, 
+            "lognorm": {"simple_auto": {...},  "double": {...}},
+            "norm":    {"simple_auto": {...},  "double": {...}},
+        } 
+        Dictionnaire à parcourrir en prennant cela en compte """
         print("Résultats ajoutés au dictionnaire\n")
+        
 
     print("Boucle finie!\n")
     print("Résultats:", resultats_fitting)

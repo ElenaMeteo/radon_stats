@@ -89,24 +89,29 @@ def stats_scores_fittings(resultats):
     statistique sur les comparaisons relatives entre les distributions. 
     Args:
         resultats (list): Liste de dictionnaires contenant les résultats 
-        du fitting pour chaque distribution """
+        du fitting pour chaque distribution 
+        
+    Returns:
+        best (dict): Dictionnaire contenant le recapitulatif de la meilleure 
+        distribution"""
 
     compteur_dist = {nom: 0 for nom in DIST.keys()}
     diff_aic = {nom: [] for nom in DIST.keys()}
     diff_bic = {nom: [] for nom in DIST.keys()}
 
     best = min(resultats, key=lambda x: x['bic'])
-    compteur_dist[best['nom']] += 1
+    # compteur_dist[best['nom']] += 1
     best_aic = best['aic']
     best_bic = best['bic']
 
     diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats)
-    recap_stats_scores(compteur_dist, diff_aic, diff_bic)
+    recap_stats_scores(diff_aic, diff_bic)
+    # recap_stats_scores(compteur_dist, diff_aic, diff_bic)
 
     return best
 
-def recap_stats_scores(compteur_dist, diff_aic, diff_bic):
-    print("\n\nMeilleures distributions:", dict(compteur_dist))
+def recap_stats_scores(diff_aic, diff_bic, compteur_dist=None):
+    # print("\n\nMeilleures distributions:", dict(compteur_dist))
 
     mean_diff_aic = {k: np.mean(v) for k, v in diff_aic.items()}
     mean_diff_bic = {k: np.mean(v) for k, v in diff_bic.items()}

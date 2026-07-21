@@ -118,3 +118,8 @@ def docs_dict_by_quantiles_to_json(dict_by_quantiles, path):
 
     with open(path, mode="w", encoding="utf-8") as write_file:
         json.dump(dict_json, write_file, ensure_ascii=False, indent=2)
+
+
+def docs_dict_params (params, path):
+    """ Cette fonction écrit le dictionnaire de paramètres
+    résultants de chaque fitting (par distribution et par quantile)"""

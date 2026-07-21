@@ -73,9 +73,9 @@ YLABEL_ROC = "Taux de hit rates (H(F))"
 # Distributions possibles
 DIST = {
     "norm": stats.norm,
-    "weibull_min": stats.weibull_min,
+    # "weibull_min": stats.weibull_min,
     # "weibull_max": stats.weibull_max,
-    # "gamma": stats.gamma,
+    "gamma": stats.gamma,
     # "beta": stats.beta,
     "log-norm": stats.lognorm
 }
