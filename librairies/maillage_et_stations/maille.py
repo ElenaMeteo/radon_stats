@@ -12,7 +12,7 @@ from ..documents.fichiers_erreur import lecture_col, coord_obt
 from ..constantes import *
 
 def maille_exe(coords):
-    """Execute maille france avec
+    """  Execute maille france avec
     tous les paramètres nécessaires
     """
 
@@ -78,7 +78,7 @@ def maille_france(lat, lon):
 
 
 def dict_min5 (maille, coords, ad_all):
-    """Parcourt la maille carré par carré et compte le nombre de stations
+    """ Parcourt la maille carré par carré et compte le nombre de stations
     dans chacun. Si le nombre de stations est supérieur ou égal à MIN_STAT,
     on ajoute la maille à un double diccionnaire.
     Args:
@@ -126,8 +126,8 @@ def dict_min5 (maille, coords, ad_all):
     return dict_maille
 
 
-def dict_yA_yB(dict_maille):
-    """À partir du dictionnaire contenant les infromations sur les
+def dict_yA_yB_filtre(dict_maille):
+    """ À partir du dictionnaire contenant les infromations sur les
     zones du maillage contenant 5 stations de mesure ou plus, cette 
     fonction génère un dictionnaire qui regroupe les valeurs yA avec 
     ses yB correspondents
@@ -197,11 +197,58 @@ def dict_yA_yB(dict_maille):
 
             # On rajoute un autre contrôle de NaN
             if not np.isnan(yA):
-                # Crear una clave única para cada instante en cada maille
+                # On garde chaque instant de chaque maille
                 dict_yAyB[f'{maille_min5}_{n}'] = {'yA': yA, 'yB': yB}
 
     return dict_yAyB
 
+
+def dict_yA_yB_sans_filtre(dict_maille):
+    """ À partir du dictionnaire contenant les informations sur les
+    zones du maillage contenant 5 stations de mesure ou plus, cette 
+    fonction génère un dictionnaire qui regroupe les valeurs yA avec 
+    ses yB correspondants, SANS filtrer par condition de pic (on garde 
+    tous les instants de temps).
+
+    Args:
+        dict_maille (dictionnaire): c'est la sortie de la fonction dict_min5, 
+        c'est un dictionnaire qui contient les informations sur les zones du 
+        maillage contenant 5 stations de mesure ou plus: les points de la maille, 
+        les stations de mesure dans la maille et les adresses des stations de mesure.
+
+    Returns:
+        dictionnaire: un dictionnaire qui regroupe les valeurs yA avec 
+        ses yB correspondants, pour tous les instants de temps (pas seulement 
+        les pics). Chaque clé est une maille contenant 5 stations de mesure 
+        ou plus, pareil que pour dict_maille.
+    """
+    dict_yAyB = {}
+
+    for maille_min5, info_maille in dict_maille.items():
+
+        ad_list = info_maille['ad_stat_mesure']  # Liste de directions
+        gamma_obs = []
+
+        # Itérer sur chaque adresse et combiner les données
+        for ad in ad_list:
+            # On ajoute les valeurs de chaque station à la liste gamma_obs
+            # Chaque colonne de gamma_obs correspond à une station, chaque ligne correspond à un instant de temps
+            gamma_obs.append(lecture_col(ad, VALOBS))
+
+        gamma_obs = np.array(gamma_obs).T
+        # print("gamma_obs, shape:", gamma_obs, np.array(gamma_obs).shape)
+
+        # On prend tous les instants de temps, sans filtrer par pic
+        for n in range(gamma_obs.shape[0]):
+            yB = gamma_obs[n, :]
+            yA = np.nanmean(yB)
+
+            # On garde le contrôle de NaN pour yA
+            if not np.isnan(yA) and not np.any(np.isnan(yB)):
+                # On garde chaque instant de chaque maille
+                dict_yAyB[f'{maille_min5}_{n}'] = {'yA': yA, 'yB': yB}
+
+    return dict_yAyB
 
 def MSE(yA, yB):
     """Calcule l'erreur quadratique moyenne entre yA et yB

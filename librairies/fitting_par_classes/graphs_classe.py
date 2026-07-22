@@ -155,8 +155,9 @@ class Graphs:
             ax.legend()
             ax.set_title(self.titres_meths.get(methode, methode))
 
+        graphiques = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/3eval/avec_filtre"
         fig.suptitle(f'{self.titre},\n q={self.quantile} et rang yA = {self.yA_range}')
-        fig.savefig(f'graph_eval_{self.n_methodes}_methodes_q{self.quantile}.png', dpi=150, bbox_inches='tight')
+        fig.savefig(f'{graphiques}/dist_yB_{self.n_methodes}eval_{self.quantile}.png', dpi=150, bbox_inches='tight')
 
 
 def graphs_eval_simple_et_double (yB:np.ndarray, quantile:str, info_quantile:dict, resultats_fitting:dict, n_methodes:int=3):

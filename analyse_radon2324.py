@@ -22,7 +22,7 @@ from librairies.documents.docs import docs_dict_yAyB_to_json, docs_dict_by_quant
 from librairies.exe_analyse.fitting import dict_fit_yB
 from librairies.exe_analyse.gamma_data import dict_yAyB_by_quantiles
 
-from librairies.maillage_et_stations.maille import maille_exe, dict_min5, dict_yA_yB
+from librairies.maillage_et_stations.maille import maille_exe, dict_min5, dict_yA_yB_filtre, dict_yA_yB_sans_filtre
 from librairies.maillage_et_stations.stations_zone import dict_coord_stats
 
 from librairies.graphs.graphs_yA import graph_yA_yB, graph_hist_equit, graph_params_yA
@@ -63,7 +63,7 @@ def main():
     ########################
 
     # Analyse des pics dans les mailles filtrées
-    dict_yAyB = dict_yA_yB(dict_maille)
+    dict_yAyB = dict_yA_yB_filtre(dict_maille)
     print("Fin de l'analyse des pics dans les mailles filtrées")
 
     ad_dict_yAyB = dossier_json / "dict_yAyB.json"
@@ -137,7 +137,7 @@ def main():
             resultats_fitting=resultats_fitting
         )
     print("Fin du fitting des yB par yA moyen de chaque bin")
-    plt.show()
+    # plt.show()
     print("Fin de la génération du graphique des paramètres de la distribution gamma en fonction de yA")
 
     #dict_fit = dict_fit_yB(dict_by_quantiles)
