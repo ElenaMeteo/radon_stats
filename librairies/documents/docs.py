@@ -69,6 +69,31 @@ def docs_dict_to_json(dict_all, path):
     with open(path, mode="w", encoding="utf-8") as write_file:
         json.dump(dict_json, write_file, ensure_ascii=False, indent=2, sort_keys=True)
 
+def docs_dict_to_json_generique(dictionnaire, path):
+    """Écrit n'importe quel dictionnaire dans un fichier json, en 
+    convertissant les éventuels arrays NumPy en listes.
+
+    Args:
+        dictionnaire (dict): dictionnaire à écrire (structure quelconque)
+        path (str ou Path): chemin du fichier json de sortie
+    """
+    def convertir(obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, (np.integer,)):
+            return int(obj)
+        if isinstance(obj, (np.floating,)):
+            return float(obj)
+        if isinstance(obj, dict):
+            return {k: convertir(v) for k, v in obj.items()}
+        if isinstance(obj, (list, tuple)):
+            return [convertir(v) for v in obj]
+        return obj
+
+    dict_json = convertir(dictionnaire)
+
+    with open(path, mode="w", encoding="utf-8") as write_file:
+        json.dump(dict_json, write_file, ensure_ascii=False, indent=2, sort_keys=True)
 
 def docs_dict_yAyB_to_json(dict_yAyB, path):
     """Crée un document .json à partir du dictionnaire dict_yA_yB."""

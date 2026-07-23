@@ -36,7 +36,7 @@ def dict_lecture(ad, col):
             
     return dict
 
-def dict_simu_vs_obs(data):
+def dict_simu_vs_obs(data_base):
     """Sort un dictionnaire ayant les 
     références des adresses en "keys" et les 
     vecteurs simu et obs de la base de données
@@ -54,14 +54,15 @@ def dict_simu_vs_obs(data):
 
     dict = {}
 
-    for bloc in data["adresses"]:
+    for bloc in data_base["adresses"]:
 
         for ref, adresse in bloc.items():
             if ref == "dep":
                 continue
 
-            data = lecture_csv(adresse)
+            # data = lecture_csv(adresse)
             obs = lecture_col(adresse, VALOBS)
+            
             simu = lecture_col(adresse, VALSIMU)
 
             # On va comparer les vecteurs, donc il faut qu'ils aient du sens
@@ -99,6 +100,28 @@ def combiner_dicts(dict1, dict2):
 
     return dict_all
 
+def combiner_n_dicts(*dicts):
+    """Concatène les vecteurs de N dictionnaires 
+    avec les mêmes références
+
+    Args:
+        *dicts (dict): nombre variable de dictionnaires, chacun contenant 
+        les valeurs structurées de simu et obs d'une année
+
+    Returns:
+        dict: dictionnaire avec les vecteurs concaténés
+    """
+    dict_all = {}
+
+    for d in dicts:
+        for ref, vals in d.items():
+            if ref in dict_all:
+                dict_all[ref][0] = np.concatenate([dict_all[ref][0], vals[0]])
+                dict_all[ref][1] = np.concatenate([dict_all[ref][1], vals[1]])
+            else:
+                dict_all[ref] = [vals[0], vals[1]]
+
+    return dict_all
 
 def pic_gamma(adresse):
     """Compte le nombre de fois

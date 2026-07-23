@@ -14,6 +14,7 @@ from pathlib import Path
 from collections import defaultdict
 
 from librairies.constantes import *
+from librairies.structure_donnees import structure_donnees
 
 from librairies.documents.fichiers_erreur import coord_obt
 from librairies.documents.fichiers import lecture_json
@@ -40,32 +41,40 @@ dossier_json = dossier / "json"
 def main():
     """Execute main script"""
 
-    # Données par maille
-    ####################
+    # Données initales
+    ##################
 
     # Lecture document référence pour coordonnées
-    data23 = lecture_json(NOM_DATA_23)
+    # data23 = lecture_json(NOM_DATA_23)
 
-    # Coordonnées stations
-    dict_coord = dict_coord_stats(data23)
-    print("Fin de la création du dictionnaire des coordonnées des stations")
-    coords, ad_all = coord_obt(dict_coord)
+    # # Coordonnées stations
+    # dict_coord = dict_coord_stats(data23)
+    # print("Fin de la création du dictionnaire des coordonnées des stations")
+    # coords, ad_all = coord_obt(dict_coord)
+
+
+    dict_ad, dict_coords, dict_vals = structure_donnees(NOM_DATA_ALL_BD)
+
 
     # Maille
-    maille = maille_exe(coords)
+    ########
+
+    maille = maille_exe(dict_coords)
     print("Fin de la création de la maille")
 
     # Filtrations des mailles contenant assez de stations
-    dict_maille = dict_min5(maille, coords, ad_all)
+    dict_maille = dict_min5(maille, dict_coords, dict_ad)
     print("Fin de la filtration des mailles")
 
     # Traîtement des données
     ########################
 
-    # Analyse des pics dans les mailles filtrées
-    dict_yAyB = dict_yA_yB_filtre(dict_maille)
+    # Séparation en yB et yA associés
+    dict_yAyB = dict_yA_yB_filtre(dict_maille) # On applique le filtre de pic
+    # dict_yAyB = dict_yA_yB_sans_filtre(dict_maille) # On applique aucun filtre
     print("Fin de l'analyse des pics dans les mailles filtrées")
 
+    # Écriture du dictionnaire organisé par yA/yB
     ad_dict_yAyB = dossier_json / "dict_yAyB.json"
     docs_dict_yAyB_to_json(dict_yAyB, ad_dict_yAyB)
     print(f"Fin de l'écriture de dict_yAyB dans {ad_dict_yAyB}")
@@ -74,11 +83,14 @@ def main():
     dict_by_quantiles = dict_yAyB_by_quantiles(dict_yAyB)
     print(f"\nSeparation par quantiles de yA:")
 
+    # Écriture du dictionnaire organisé par quantiles de yA
     ad_dict_yAyB_quant = dossier_json / "dict_yAyB_quantiles.json"
     docs_dict_by_quantiles_to_json(dict_by_quantiles, ad_dict_yAyB_quant)
     print(f"Fin de l'écriture de dict_yAyB dans {ad_dict_yAyB_quant}")
 
     # Analyse des valeurs yA
+    """ Bloc fait afin de voir la portée des données 
+    qui sont en dessous d'un seuil """
     cont_yA = 0
     ref_yA = []
     cont_yA_all = 0

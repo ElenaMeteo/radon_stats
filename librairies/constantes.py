@@ -7,10 +7,12 @@ from scipy import stats
 from pathlib import Path
 
 # Data json
+
+# Adresses aux données
 NOM_DATA_23 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all23/adresses_mac_min5.json"
 NOM_DATA_24 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all24/adresses_mac_min5.json"
-NOM_DATA_2324 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/dict_23_24.json"
 NOM_DATA_06_25 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_juin25/adresses_mac_min5.json"
+NOM_DATA_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_all_bd.json"
 # NOM_DATA = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/json/adresses.json"
 AD_DATA_JSON = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json"
 

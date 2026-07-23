@@ -99,6 +99,6 @@ def dict_coord_stats(data):
                 continue
 
             lat, lon = coord(adresse)
-            dict[adresse] = [lat, lon]
+            dict[ref] = [lat, lon]
 
     return dict
