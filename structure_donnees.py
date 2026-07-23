@@ -13,7 +13,7 @@ from librairies.documents.docs import docs_dict_to_json_generique
 
 from librairies.exe_analyse.gamma_data import dict_simu_vs_obs, combiner_n_dicts
 
-dossier = Path(__file__).parent.parent
+dossier = Path(__file__).parent
 dossier_json = dossier / "json"
 
 class Structure:
@@ -158,13 +158,18 @@ def structure_donnees (ad_dict_bd:str) -> dict:
 
     dict_coords_comm = {k: dict_coords[k] for k in common_keys}
 
-    dict_vals_comm = { # Filtré par refs communes
+    # dict_vals_comm = { # Filtré par refs communes
+    #     ref_bd: {k: vals[k] for k in common_keys}
+    #     for ref_bd, vals in dict_vals.items()
+    # }
+
+    # Combinaison des dictionnaires de données en 1
+    dict_vals_comm = {
         ref_bd: {k: vals[k] for k in common_keys}
         for ref_bd, vals in dict_vals.items()
     }
-
-    # Combinaison des dictionnaires de données en 1
     dict_vals_all = combiner_n_dicts(*dict_vals_comm.values())
+    dict_vals_all = next(iter(dict_vals_all.values()))
 
     # Écriture des dictionnaires dans des archives json
     ad_dict_ad = dossier_json / "structure_bd" / "dict_adresses_all_bd.json"
@@ -179,37 +184,16 @@ def structure_donnees (ad_dict_bd:str) -> dict:
 
     return dict_adresses, dict_coords_comm, dict_vals_all
 
+def main ():
+    """ Execute le code pour enregister les 
+    données dans le format qui nos convient pour 
+    le reste du projet """
+
+    structure_donnees(NOM_DATA_ALL_BD)
 
 
+if __name__ == "__main__":
+    main()
 
-# def main():
-#     """Execute main script"""
-    
-#     # Structure des données
-#     #######################
-
-#     # Lecture des documents json (adresses) 
-#     data23 = lecture_json(NOM_DATA_23)
-#     data24 = lecture_json(NOM_DATA_24)
-#     print("Fin lecture des documents json")
-
-#     # Dictionnaires qui contiennent les données par station
-#     dict23 = dict_simu_vs_obs(data23)
-#     dict24 = dict_simu_vs_obs(data24)
-#     print("Fin de la création des dictionnaires des données par station")
-
-#     # On garde seulement les references communes 
-#     common_keys = set(dict23.keys()) & set(dict24.keys())
-#     dict23 = {k: dict23[k] for k in common_keys}
-#     dict24 = {k: dict24[k] for k in common_keys}
-#     print("Fin de la filtration par références communes")
-
-#     # Concatenation des années (pas besoin de faire la différence)
-#     dict_all = combiner_dicts(dict23, dict24)
-#     print("Fin de la concatenation des années")
-    
-#     # Enregistrement des données structurées
-#     ad_json = dossier_json / "dict_23_24.json"
-#     docs_dict_to_json(dict_all, ad_json)
 
 

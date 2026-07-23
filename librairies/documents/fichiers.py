@@ -17,10 +17,10 @@ def lecture_csv(adresse):
     data = pd.read_csv(adresse, sep=";")
     return data
 
-def lecture_json(data):
+def lecture_json(ad_data):
     """Lit les données du document json"""
     print(os.getcwd())
-    with open(data, "r") as file:
+    with open(ad_data, "r") as file:
         data = json.load(file)
     return data
 

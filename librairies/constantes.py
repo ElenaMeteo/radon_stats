@@ -16,6 +16,11 @@ NOM_DATA_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json
 # NOM_DATA = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/json/adresses.json"
 AD_DATA_JSON = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json"
 
+# Adresses de lecture de dictionnaires
+AD_ADRESSES_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_adresses_all_bd.json"
+AD_COORDS_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_coords_all_bd.json"
+AD_VALS_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_vals_all_bd.json"
+
 # Data geopandas
 NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"
 # NOM_CARTE = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/ne_110m_admin_0_countries.shp"

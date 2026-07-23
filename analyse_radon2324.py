@@ -14,7 +14,7 @@ from pathlib import Path
 from collections import defaultdict
 
 from librairies.constantes import *
-from librairies.structure_donnees import structure_donnees
+from structure_donnees import structure_donnees
 
 from librairies.documents.fichiers_erreur import coord_obt
 from librairies.documents.fichiers import lecture_json
@@ -52,9 +52,11 @@ def main():
     # print("Fin de la création du dictionnaire des coordonnées des stations")
     # coords, ad_all = coord_obt(dict_coord)
 
-
-    dict_ad, dict_coords, dict_vals = structure_donnees(NOM_DATA_ALL_BD)
-
+    """ Ces dictionnaires sont disponibles une fois 
+    'structure_donnees.py' a été éxecuté """
+    dict_ad = lecture_json(AD_ADRESSES_ALL_BD)
+    dict_coords = lecture_json(AD_COORDS_ALL_BD)
+    dict_vals = lecture_json(AD_VALS_ALL_BD)
 
     # Maille
     ########
@@ -63,14 +65,14 @@ def main():
     print("Fin de la création de la maille")
 
     # Filtrations des mailles contenant assez de stations
-    dict_maille = dict_min5(maille, dict_coords, dict_ad)
+    dict_maille = dict_min5(maille, dict_coords)
     print("Fin de la filtration des mailles")
 
     # Traîtement des données
     ########################
 
     # Séparation en yB et yA associés
-    dict_yAyB = dict_yA_yB_filtre(dict_maille) # On applique le filtre de pic
+    dict_yAyB = dict_yA_yB_filtre(dict_maille, dict_vals) # On applique le filtre de pic
     # dict_yAyB = dict_yA_yB_sans_filtre(dict_maille) # On applique aucun filtre
     print("Fin de l'analyse des pics dans les mailles filtrées")
 

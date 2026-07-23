@@ -11,15 +11,22 @@ from .stations_zone import cont_stat
 from ..documents.fichiers_erreur import lecture_col, coord_obt
 from ..constantes import *
 
-def maille_exe(coords):
-    """  Execute maille france avec
+def maille_exe(dict_coords:dict) -> np.ndarray:
+    """ Execute maille france avec
     tous les paramètres nécessaires
+
+    Args:
+        dict_coords (dict): dictionnaire {ref: [lat, lon]} avec les 
+        coordonnées de chaque station
+
+    Returns:
+        maille: résultat de maille_france, la grille avec les stations 
+        regroupées par carré (> MIN_STATIONS)
     """
+    lats = [coord[0] for coord in dict_coords.values()]
+    lons = [coord[1] for coord in dict_coords.values()]
 
-    lats = coords[:, 0]
-    lons = coords[:, 1]
-
-    # Limites pur définir la maille
+    # Limites pour définir la maille
     lat_lim = (min(lats), max(lats))
     lon_lim = (min(lons), max(lons))
 
@@ -28,7 +35,7 @@ def maille_exe(coords):
 
     return maille
 
-def maille_france(lat, lon):
+def maille_france(lat:np.ndarray, lon:np.ndarray) -> np.ndarray:
     """
     Crée une maille couvrant la France métropolitaine avec une distance DELTA donnée entre les lignes.
     Écrit une liste des points de la maille dans un fichier CSV.
@@ -77,88 +84,83 @@ def maille_france(lat, lon):
     return maille
 
 
-def dict_min5 (maille, coords, ad_all):
+def dict_min5(maille:np.ndarray, dict_coords:dict):
     """ Parcourt la maille carré par carré et compte le nombre de stations
     dans chacun. Si le nombre de stations est supérieur ou égal à MIN_STAT,
-    on ajoute la maille à un double diccionnaire.
-    Args:
-        maille (list): c'est la sortie de la fonction maille_france, c'est une liste de listes, 
-        où chaque sous-liste représente une rangée de la maille, et chaque élément est un tuple 
-        (latitude, longitude) des sommets.
-        coords (numpy array): c'est un tableau numpy qui contient les coordonnées des stations de mesure.
-        ad_all (numpy array): c'est un tableau numpy qui contient les adresses des stations de mesure.
-    Returns:
-        dict_maille (dictionnaire): c'est un dictionnaire qui contient les informations sur
-        les zones du maillage contenant 5 stations de mesure ou plus: les points de la maille,
-        les stations de mesure dans la maille et les adresses des stations de mesure."""
+    on ajoute la maille à un double dictionnaire.
 
-    # Dimensions de la maille
+    Args:
+        maille (list): sortie de maille_france, liste de listes de tuples 
+        (latitude, longitude) des sommets.
+        dict_coords (dict): dictionnaire {ref: [lat, lon]} des coordonnées 
+        des stations de mesure.
+
+    Returns:
+        dict_maille (dictionnaire): dictionnaire avec les infos sur les 
+        zones du maillage contenant 5 stations de mesure ou plus.
+    """
     n = len(maille)
     m = len(maille[0])
-
     cont_mailles = 0
-
     dict_maille = {}
-    """ On parcourt la maille carré par carré et on compte le nombre de stations
-    dans chacun. Si le nombre de stations est supérieur ou égal à MIN_STAT, 
-    on ajoute la maille à un double diccionnaire """
 
     for i in range(1, n):
         for j in range(1, m):
-            # 4 points de la maille qu'on regarde
             p1 = maille[i-1][j-1]
             p2 = maille[i-1][j]
             p3 = maille[i][j]
             p4 = maille[i][j-1]
-            # On compte et on obtient la liste des stations dans la maille
-            cont, stat_dans_zone, ad_stat_zone = cont_stat(p1, p2, p3, p4, coords, ad_all)
-            # On agit si y a assez de stations
+
+            cont, stat_dans_zone, ref_stat_zone = cont_stat(p1, p2, p3, p4, dict_coords)
+
             if cont >= MIN_STAT:
                 cont_mailles += 1
-                # On ajoute un élement au diccionnaire en forme de diccionnaire
                 dict_maille[f'maille_{i}_{j}'] = {
                     'points_maille': [p1, p2, p3, p4],
                     'stat_mesure': stat_dans_zone,
-                    'ad_stat_mesure': ad_stat_zone
+                    'ref_stat_mesure': ref_stat_zone  # ahora son referencias (ref), no adresses
                 }
-    print(f"Nombre de mailles avec au moins {MIN_STAT} stations: {cont_mailles}")
 
+    print(f"Nombre de mailles avec au moins {MIN_STAT} stations: {cont_mailles}")
     return dict_maille
 
 
-def dict_yA_yB_filtre(dict_maille):
-    """ À partir du dictionnaire contenant les infromations sur les
+def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict) -> dict:
+    """ À partir du dictionnaire contenant les informations sur les
     zones du maillage contenant 5 stations de mesure ou plus, cette 
     fonction génère un dictionnaire qui regroupe les valeurs yA avec 
-    ses yB correspondents
+    ses yB correspondants, en filtrant seulement les instants où il y a 
+    un pic (en obs, ou en simu avec un minimum en obs).
 
     Args:
-        dict_maille (dictionnaire): c'est la sortie de la fonction dict_min5, 
-        c'est un dictionnaire qui contient les informations sur les zones du 
-        maillage contenant 5 stations de mesure ou plus: les points de la maille, 
-        les stations de mesure dans la maille et les adresses des stations de mesure.
+        dict_maille (dict): sortie de dict_min5, contient les infos sur 
+        les zones du maillage avec 5 stations ou plus (points de la maille, 
+        stations, et références des stations de mesure).
+        dict_vals (dict): dictionnaire {ref: [simu, obs]} avec les valeurs 
+        déjà lues pour chaque station (sortie de structure_donnees).
 
     Returns:
         dictionnaire: un dictionnaire qui regroupe les valeurs yA avec 
-        ses yB correspondents. Chaque clé est une maille contenant 5 stations 
-        de mesure ou plus, pareil que pour dict_maille.
+        ses yB correspondants, seulement pour les instants de pic. Chaque 
+        clé est une maille contenant 5 stations de mesure ou plus.
     """
     dict_yAyB = {}
 
     for maille_min5, info_maille in dict_maille.items():
 
-        ad_list = info_maille['ad_stat_mesure']  # Liste de directions
+        ref_list = info_maille['ref_stat_mesure']  # Liste de références (ref)
         gamma_obs = []
         gamma_simu = []
         liste_yB_all = []
-        
-        # Itérer sur chaque adresse et combiner les données
-        for ad in ad_list:
-            # On ajoute les valeurs de chaque station à la liste gamma_obs et gamma_simu
-            # Chaque colonne de gamma_obs correspond à une station, chaque ligne correspond à un instant de temps
-            gamma_obs.append(lecture_col(ad, VALOBS)) 
-            gamma_simu.append(lecture_col(ad, VALSIMU))
-        
+
+        # Itérer sur chaque référence et combiner les données
+        for ref in ref_list:
+            simu, obs = dict_vals[ref]
+            # Chaque colonne de gamma_obs/gamma_simu correspond à une station, 
+            # chaque ligne correspond à un instant de temps
+            gamma_obs.append(obs)
+            gamma_simu.append(simu)
+
         gamma_obs = np.array(gamma_obs).T
         gamma_simu = np.array(gamma_simu).T
         # print("gamma_obs, shape:", gamma_obs, np.array(gamma_obs).shape)
@@ -170,9 +172,9 @@ def dict_yA_yB_filtre(dict_maille):
             ligne_simu_i = gamma_simu[i, :]
 
             # Deux conditions:
-                # Pic en obs
-                # Pic en simu avec un minimum en obs 
-            masc1 = any(val>= PIC for val in ligne_obs_i ) and all(not np.isnan(val) for val in ligne_obs_i)
+            # Pic en obs
+            # Pic en simu avec un minimum en obs 
+            masc1 = any(val >= PIC for val in ligne_obs_i) and all(not np.isnan(val) for val in ligne_obs_i)
             masc2 = any(val >= PIC + TOL_SIMU for val in ligne_simu_i)
 
             # Vérification que obs est assez grand
@@ -180,16 +182,15 @@ def dict_yA_yB_filtre(dict_maille):
                 for j in range(gamma_obs.shape[1]):
                     if (gamma_obs[i, j] <= PIC - TOL_OBS) or np.isnan(gamma_obs[i, j]):
                         masc2 = False
-            
+
             # On prend en compte si une des conditions est vérifiée
             if (masc1 == True) or (masc2 == True):
                 liste_yB_all.append(ligne_obs_i)
-        
+
         liste_yB_all = np.array(liste_yB_all)
         # print("liste_yB_all, shape:", liste_yB_all, liste_yB_all.shape)
 
         # Supposons que toutes les stations ont le même nombre de valeurs
-        
         for n in range(liste_yB_all.shape[0]):
             # Calcul de yA par cas de pic
             yB = liste_yB_all[n, :]

@@ -7,30 +7,29 @@ stations d'une zone donnée"""
 
 from librairies.documents.fichiers_erreur import coord
 
-def cont_stat(p1, p2, p3, p4, data, ad_all):
+def cont_stat(p1, p2, p3, p4, dict_coords):
     """
     Compte le nombre de stations dans une zone définie par les points p1, p2, p3 et p4.
+
     Args:
         p1, p2, p3, p4: points définissant les coins de la zone (sous forme de tuples (x, y)).
-        data: Liste de tuples (x, y) représentant les points à vérifier.
-    
+        dict_coords (dict): dictionnaire {ref: [lat, lon]} des stations à vérifier.
+
     Retourne:
-        int (cont): Nombre de points à l'intérieur de la zone.
-        list (stat_dans_zone): Liste des stations dans la zone 
+        int (cont): Nombre de stations à l'intérieur de la zone.
+        list (stat_dans_zone): Liste des coordonnées des stations dans la zone.
+        list (ad_stat_zone): Liste des références (ref) des stations dans la zone.
     """
-    
     polygone = [p1, p2, p3, p4]
     stat_dans_zone = []
     ad_stat_zone = []
-    
     cont = 0
 
-    for i, point in enumerate(data):
+    for ref, point in dict_coords.items():
         if point_dans_polygone(point, polygone):
             cont += 1
             stat_dans_zone.append(point)
-            ad_stat_zone.append(ad_all[i])
-            # print("point", point)
+            ad_stat_zone.append(ref)
 
     return cont, stat_dans_zone, ad_stat_zone
 
