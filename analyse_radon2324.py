@@ -72,8 +72,8 @@ def main():
     ########################
 
     # Séparation en yB et yA associés
-    dict_yAyB = dict_yA_yB_filtre(dict_maille, dict_vals) # On applique le filtre de pic
-    # dict_yAyB = dict_yA_yB_sans_filtre(dict_maille) # On applique aucun filtre
+    # dict_yAyB = dict_yA_yB_filtre(dict_maille, dict_vals) # On applique le filtre de pic
+    dict_yAyB = dict_yA_yB_sans_filtre(dict_maille, dict_vals) # On applique aucun filtre
     print("Fin de l'analyse des pics dans les mailles filtrées")
 
     # Écriture du dictionnaire organisé par yA/yB

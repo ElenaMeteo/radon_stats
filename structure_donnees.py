@@ -158,18 +158,14 @@ def structure_donnees (ad_dict_bd:str) -> dict:
 
     dict_coords_comm = {k: dict_coords[k] for k in common_keys}
 
-    # dict_vals_comm = { # Filtré par refs communes
-    #     ref_bd: {k: vals[k] for k in common_keys}
-    #     for ref_bd, vals in dict_vals.items()
-    # }
-
-    # Combinaison des dictionnaires de données en 1
-    dict_vals_comm = {
+    dict_vals_comm = { # Filtré par refs communes
         ref_bd: {k: vals[k] for k in common_keys}
         for ref_bd, vals in dict_vals.items()
     }
+
+    # Combinaison des dictionnaires de données en 1
+
     dict_vals_all = combiner_n_dicts(*dict_vals_comm.values())
-    dict_vals_all = next(iter(dict_vals_all.values()))
 
     # Écriture des dictionnaires dans des archives json
     ad_dict_ad = dossier_json / "structure_bd" / "dict_adresses_all_bd.json"
@@ -180,7 +176,7 @@ def structure_donnees (ad_dict_bd:str) -> dict:
     docs_dict_to_json_generique(dict_adresses, ad_dict_ad)
     docs_dict_to_json_generique(dict_coords_comm, ad_dict_coords)
     docs_dict_to_json_generique(dict_vals, ad_dict_vals_diff_bd)
-    docs_dict_to_json_generique(dict_vals_comm, ad_dict_vals_all_bd)
+    docs_dict_to_json_generique(dict_vals_all, ad_dict_vals_all_bd)
 
     return dict_adresses, dict_coords_comm, dict_vals_all
 

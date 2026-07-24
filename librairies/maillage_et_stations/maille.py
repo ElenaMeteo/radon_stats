@@ -204,7 +204,7 @@ def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict) -> dict:
     return dict_yAyB
 
 
-def dict_yA_yB_sans_filtre(dict_maille):
+def dict_yA_yB_sans_filtre(dict_maille, dict_vals):
     """ À partir du dictionnaire contenant les informations sur les
     zones du maillage contenant 5 stations de mesure ou plus, cette 
     fonction génère un dictionnaire qui regroupe les valeurs yA avec 
@@ -212,10 +212,11 @@ def dict_yA_yB_sans_filtre(dict_maille):
     tous les instants de temps).
 
     Args:
-        dict_maille (dictionnaire): c'est la sortie de la fonction dict_min5, 
-        c'est un dictionnaire qui contient les informations sur les zones du 
-        maillage contenant 5 stations de mesure ou plus: les points de la maille, 
-        les stations de mesure dans la maille et les adresses des stations de mesure.
+        dict_maille (dict): sortie de dict_min5, contient les infos sur 
+        les zones du maillage avec 5 stations ou plus (points de la maille, 
+        stations, et références des stations de mesure).
+        dict_vals (dict): dictionnaire {ref: [simu, obs]} avec les valeurs 
+        déjà lues pour chaque station (sortie de structure_donnees).
 
     Returns:
         dictionnaire: un dictionnaire qui regroupe les valeurs yA avec 
@@ -227,14 +228,15 @@ def dict_yA_yB_sans_filtre(dict_maille):
 
     for maille_min5, info_maille in dict_maille.items():
 
-        ad_list = info_maille['ad_stat_mesure']  # Liste de directions
+        ref_list = info_maille['ref_stat_mesure']  # Liste de références
         gamma_obs = []
 
-        # Itérer sur chaque adresse et combiner les données
-        for ad in ad_list:
-            # On ajoute les valeurs de chaque station à la liste gamma_obs
-            # Chaque colonne de gamma_obs correspond à une station, chaque ligne correspond à un instant de temps
-            gamma_obs.append(lecture_col(ad, VALOBS))
+        # Itérer sur chaque référence et combiner les données
+        for ref in ref_list:
+            simu, obs = dict_vals[ref]
+            # Chaque colonne de gamma_obs correspond à une station, 
+            # chaque ligne correspond à un instant de temps
+            gamma_obs.append(obs)
 
         gamma_obs = np.array(gamma_obs).T
         # print("gamma_obs, shape:", gamma_obs, np.array(gamma_obs).shape)
