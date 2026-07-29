@@ -11,7 +11,7 @@ class Scores:
         self.resultats_double = None
 
     def aic(self):
-    
+        pass
 
     def best_fit(self):
         """Retourne le meilleur fitting selon les scores AIC et BIC. """

@@ -21,6 +21,21 @@ AD_ADRESSES_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/j
 AD_COORDS_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_coords_all_bd.json"
 AD_VALS_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_vals_all_bd.json"
 
+# Adresses graphiques
+GRAPH_10Q_3EVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/3eval/avec_filtre"
+GRAPH_10Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/3eval/sans_filtre"
+
+GRAPH_10Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/sans_eval/avec_filtre"
+GRAPH_10Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/sans_eval/sans_filtre"
+
+GRAPH_20Q_3EVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/3eval/avec_filtre"
+GRAPH_20Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/3eval/sans_filtre"
+
+GRAPH_20Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/sans_eval/avec_filtre"
+GRAPH_20Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/sans_eval/sans_filtre"
+
+
+
 # Data geopandas
 NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"
 # NOM_CARTE = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/ne_110m_admin_0_countries.shp"
@@ -102,5 +117,5 @@ N_VALS = 3 # Une valeur par heure pendant un jour pour chaque yA
 XLIM = 100
 YLIM = 100
 
-N_QUANTILES = 20 # Nombre de quantiles pour la séparation des données
+N_QUANTILES = 10 # Nombre de quantiles pour la séparation des données
 N_DIST = 2 # Nombre de distributions pour le fitting multiple

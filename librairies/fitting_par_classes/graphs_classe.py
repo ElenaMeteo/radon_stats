@@ -57,7 +57,7 @@ class Graphs:
         else:  
             return dist.pdf(x, *parametres["shapes"], loc=parametres["loc"], scale=parametres["scale"])
 
-    def graph_dist(self):
+    def graph_dist(self, ad_filtre):
         """ Trace un histogramme simple qui sert 
         de visualisation d'une distribution. """
 
@@ -72,9 +72,12 @@ class Graphs:
         plt.xlabel(self.xlabel)
         plt.ylabel(self.ylabel)
         plt.grid()
-        plt.show()
 
-    def graph_eval_n_methodes(self, resultats_fitting):
+        plt.tight_layout(rect=[0, 0, 1, 0.93]) 
+        plt.savefig(f'{ad_filtre}/dist_yB_sans_eval_{self.quantile}.png', dpi=150, bbox_inches='tight')
+        
+
+    def graph_eval_n_methodes(self, resultats_fitting, ad_filtre):
         """Fais les graphiques évalués sur une liste de distributions théoriques.
         On met en paralléle les graphiques qui sont évalués avec
         les différentes méthodes de fitting (simple auto, simple manuel, double).
@@ -155,9 +158,9 @@ class Graphs:
             ax.legend()
             ax.set_title(self.titres_meths.get(methode, methode))
 
-        graphiques = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/3eval/avec_filtre"
         fig.suptitle(f'{self.titre},\n q={self.quantile} et rang yA = {self.yA_range}')
-        fig.savefig(f'{graphiques}/dist_yB_{self.n_methodes}eval_{self.quantile}.png', dpi=150, bbox_inches='tight')
+        fig.tight_layout(rect=[0, 0, 1, 0.93]) 
+        fig.savefig(f'{ad_filtre}/dist_yB_{self.n_methodes}eval_{self.quantile}.png', dpi=150, bbox_inches='tight')
 
 
 def graphs_eval_simple_et_double (yB:np.ndarray, quantile:str, info_quantile:dict, resultats_fitting:dict, n_methodes:int=3):
@@ -177,7 +180,8 @@ def graphs_eval_simple_et_double (yB:np.ndarray, quantile:str, info_quantile:dic
     yA_range = info_quantile['yA_range']
     
     graphs_fitting = Graphs(yB, yA_range, quantile, n_methodes)
-    graphs_fitting.graph_eval_n_methodes(resultats_fitting)
+    graphs_fitting.graph_dist(GRAPH_10Q_NEVAL_NFILTRE)
+    graphs_fitting.graph_eval_n_methodes(resultats_fitting, GRAPH_10Q_3EVAL_NFILTRE)
     
     
 
