@@ -1,0 +1,75 @@
+STATISTIQUES DES FITTINGS
+============================================================
+
+========== SIMPLE_AUTO ==========
+
+Victoires AIC
+    norm         : 0
+    gamma        : 2
+    log-norm     : 8
+
+Victoires BIC
+    norm         : 0
+    gamma        : 2
+    log-norm     : 8
+
+Différence moyenne (%) AIC
+    norm         : nan
+    gamma        : nan
+    log-norm     : nan
+
+Différence moyenne (%) BIC
+    norm         : nan
+    gamma        : nan
+    log-norm     : nan
+
+------------------------------------------------------------
+
+========== SIMPLE_MANUEL ==========
+
+Victoires AIC
+    norm         : 0
+    gamma        : 3
+    log-norm     : 7
+
+Victoires BIC
+    norm         : 0
+    gamma        : 3
+    log-norm     : 7
+
+Différence moyenne (%) AIC
+    norm         : 75.714
+    gamma        : 0.267
+    log-norm     : 0.032
+
+Différence moyenne (%) BIC
+    norm         : 75.708
+    gamma        : 0.267
+    log-norm     : 0.032
+
+------------------------------------------------------------
+
+========== DOUBLE ==========
+
+Victoires AIC
+    norm         : 1
+    gamma        : 8
+    log-norm     : 1
+
+Victoires BIC
+    norm         : 1
+    gamma        : 8
+    log-norm     : 1
+
+Différence moyenne (%) AIC
+    norm         : 44.853
+    gamma        : 4.474
+    log-norm     : 5.222
+
+Différence moyenne (%) BIC
+    norm         : 44.848
+    gamma        : 4.474
+    log-norm     : 5.222
+
+------------------------------------------------------------
+

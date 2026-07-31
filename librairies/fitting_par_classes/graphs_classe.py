@@ -132,7 +132,7 @@ class Graphs:
                 {**res, "nom": nom_dist}
                 for nom_dist, res in resultats_meth.items()
             ]
-            best_res = stats_scores_fittings(liste_dicts_res)
+            best_res = min(liste_dicts_res, key=lambda x: x["bic"])
             best_nom = best_res['nom']
 
             # Boucle qui traite le graphique de chaque distribution pour chaque méthode
@@ -160,7 +160,7 @@ class Graphs:
 
         fig.suptitle(f'{self.titre},\n q={self.quantile} et rang yA = {self.yA_range}')
         fig.tight_layout(rect=[0, 0, 1, 0.93]) 
-        fig.savefig(f'{ad_filtre}/dist_yB_{self.n_methodes}eval_{self.quantile}.png', dpi=150, bbox_inches='tight')
+        # fig.savefig(f'{ad_filtre}/dist_yB_{self.n_methodes}eval_{self.quantile}.png', dpi=150, bbox_inches='tight')
 
 
 def graphs_eval_simple_et_double (yB:np.ndarray, quantile:str, info_quantile:dict, resultats_fitting:dict, n_methodes:int=3):
@@ -180,8 +180,8 @@ def graphs_eval_simple_et_double (yB:np.ndarray, quantile:str, info_quantile:dic
     yA_range = info_quantile['yA_range']
     
     graphs_fitting = Graphs(yB, yA_range, quantile, n_methodes)
-    graphs_fitting.graph_dist(GRAPH_10Q_NEVAL_NFILTRE)
-    graphs_fitting.graph_eval_n_methodes(resultats_fitting, GRAPH_10Q_3EVAL_NFILTRE)
+    graphs_fitting.graph_dist(GRAPH_10Q_NEVAL_FILTRE)
+    graphs_fitting.graph_eval_n_methodes(resultats_fitting, GRAPH_10Q_3EVAL_FILTRE)
     
     
 

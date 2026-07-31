@@ -34,7 +34,16 @@ GRAPH_20Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon
 GRAPH_20Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/sans_eval/avec_filtre"
 GRAPH_20Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/sans_eval/sans_filtre"
 
+# Adresses stats résultats
+RESUT_10Q = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/result_10q"
+RESUT_20Q = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/result_20q"
 
+# Adresse graphiques régression
+REG_10Q_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/avec_filtre"
+REG_10Q_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/sans_filtre"
+
+REG_20Q_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/avec_filtre"
+REG_20Q_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/sans_filtre"
 
 # Data geopandas
 NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"

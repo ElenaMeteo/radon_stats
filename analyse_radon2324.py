@@ -33,6 +33,9 @@ from librairies.graphs.graphs_tout_en_1 import graph_dist_tout_en_1, graph_eval_
 from librairies.fitting_par_classes.fitting_classe import fitting_simple_et_double
 from librairies.fitting_par_classes.graphs_classe import graphs_eval_simple_et_double
 
+from librairies.eval.scores import stats_scores_fittings
+from librairies.eval.mu_sigma import regression_params
+
 # Là on va garder nos résultats .csv
 dossier = Path(__file__).parent
 dossier_docs = dossier / "docs"
@@ -72,8 +75,8 @@ def main():
     ########################
 
     # Séparation en yB et yA associés
-    # dict_yAyB = dict_yA_yB_filtre(dict_maille, dict_vals) # On applique le filtre de pic
-    dict_yAyB = dict_yA_yB_sans_filtre(dict_maille, dict_vals) # On applique aucun filtre
+    dict_yAyB = dict_yA_yB_filtre(dict_maille, dict_vals) # On applique le filtre de pic
+    #dict_yAyB = dict_yA_yB_sans_filtre(dict_maille, dict_vals) # On applique aucun filtre
     print("Fin de l'analyse des pics dans les mailles filtrées")
 
     # Écriture du dictionnaire organisé par yA/yB
@@ -134,32 +137,37 @@ def main():
     #                      eval=EVAL)
     
     # CODE FAIT AVEC DES CLASSES
+    resultats_all_q = {}
+    yA_abs = []
     for ref, values in dict_by_quantiles.items():
+
+        yA = values['yA']
+        vecteur_yA = np.array([float(x) for x in yA])
+        yA_abs.append(sum(vecteur_yA)/len(vecteur_yA))
 
         yB = values['yB']
         yB_flat = np.concatenate(yB).astype(float)
         print(f"\nEssai triple fitting avec {ref}\n\n")
 
         # Fitting
-        resultats_fitting = fitting_simple_et_double(yB=yB_flat, dossier_json=dossier_json)
+        resultats_all_q[ref] = fitting_simple_et_double(yB=yB_flat, dossier_json=dossier_json)
 
         # Plot
         graphs_eval_simple_et_double(
             yB=yB_flat, 
             quantile=ref, 
             info_quantile=dict_by_quantiles[ref], 
-            resultats_fitting=resultats_fitting
+            resultats_fitting=resultats_all_q[ref]
         )
     print("Fin du fitting des yB par yA moyen de chaque bin")
     # plt.show()
     print("Fin de la génération du graphique des paramètres de la distribution gamma en fonction de yA")
 
-    #dict_fit = dict_fit_yB(dict_by_quantiles)
-    
-    # Graphique des paramètres de la distribution gamma en fonction de yA
-    #graph_params_yA(dict_fit, xlabel="yA", ylabel="Paramètres de la distribution gamma", titre="Paramètres de la distribution gamma en fonction de yA")
+    # Statistiques des résultats
+    stats_scores_fittings(resultats_all_q, ruta_txt=Path(RESUT_10Q)/"stats_resultats_avec_filtre.txt")
 
-    
+    # Régressions linéaires des paramètres par quantile
+    regression_params(resultats_all_q, yA_abs)
 
 if __name__ == "__main__":
     main()

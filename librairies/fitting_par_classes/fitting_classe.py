@@ -9,6 +9,7 @@ graphiques et/ou de statistiques de manière libre.
 Chaque classe correspond à un type différent de fitting."""
 
 import numpy as np
+from pathlib import Path
 from scipy.optimize import minimize
 from scipy.special import softmax
 from scipy.stats import kstest
@@ -442,9 +443,9 @@ def fitting_simple_et_double(yB:np.ndarray, dossier_json) -> dict:
         resultats_fitting[nom_dist] = stats_du_fit.get_eval()
         """ La structure des résultats est la suivante:
         resultats_fitting = {
-            "gamma":   {"simple_auto": {...},  "double": {...}}, 
-            "lognorm": {"simple_auto": {...},  "double": {...}},
-            "norm":    {"simple_auto": {...},  "double": {...}},
+            "gamma":   {"simple_auto": {...}, "simple_manuel: {...}", "double": {...}}, 
+            "lognorm": {"simple_auto": {...}, "simple_manuel: {...}", "double": {...}},
+            "norm":    {"simple_auto": {...}, "simple_manuel: {...}", "double": {...}},
         } 
         Dictionnaire à parcourrir en prennant cela en compte """
         print("Résultats ajoutés au dictionnaire\n")
@@ -452,7 +453,8 @@ def fitting_simple_et_double(yB:np.ndarray, dossier_json) -> dict:
 
     print("Boucle finie!\n")
     print("Résultats:", resultats_fitting)
+
     # Statistiques sur nos résultats
-    # stats_scores_fittings(resultats_fitting)  # On peut appeler cette fonction ici
+    # stats_scores_fittings(resultats_fitting, ruta_txt= Path(RESUT_10Q)/"resultats_fitting.txt")
 
     return resultats_fitting

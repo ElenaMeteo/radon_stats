@@ -52,27 +52,90 @@ def bic(ll, k, n) -> float:
 
 # ---------------------------------------------------
 
-def diff_best (best_aic, best_bic, diff_aic, diff_bic, resultats):
-    """Calcule les différences en pourcentage entre les scores AIC et BIC 
-    de chaque distribution et les meilleurs scores.
+# def diff_best (best_aic, best_bic, diff_aic, diff_bic, resultats):
+#     """Calcule les différences en pourcentage entre les scores AIC et BIC 
+#     de chaque distribution et les meilleurs scores.
     
-    Args:
-        best_aic (float): le meilleur score AIC trouvé.
-        best_bic (float): le meilleur score BIC trouvé.
-        diff_aic (dict): dictionnaire où on stocke les différences en pourcentage 
-            pour l'AIC, indexé par le nom de la distribution.
-        diff_bic (dict): dictionnaire où on stocke les différences en pourcentage 
-            pour le BIC, indexé par le nom de la distribution.
-        resultats (list): liste de dictionnaires contenant les résultats du fitting 
-            pour chaque distribution.
+#     Args:
+#         best_aic (float): le meilleur score AIC trouvé.
+#         best_bic (float): le meilleur score BIC trouvé.
+#         diff_aic (dict): dictionnaire où on stocke les différences en pourcentage 
+#             pour l'AIC, indexé par le nom de la distribution.
+#         diff_bic (dict): dictionnaire où on stocke les différences en pourcentage 
+#             pour le BIC, indexé par le nom de la distribution.
+#         resultats (list): liste de dictionnaires contenant les résultats du fitting 
+#             pour chaque distribution.
     
-    Returns:
-        None: modifie en place les dictionnaires diff_aic et diff_bic.
-    """
-    for res in resultats:
-        nom = res["nom"]
+#     Returns:
+#         None: modifie en place les dictionnaires diff_aic et diff_bic.
+#     """
+#     for res in resultats:
+#         nom = res["nom"]
                 
-                # Eviter division par 0
+#                 # Eviter division par 0
+#         if best_aic != 0:
+#             diff_pct_aic = (res["aic"] - best_aic) / abs(best_aic) * 100
+#             diff_aic[nom].append(diff_pct_aic)
+
+#         if best_bic != 0:
+#             diff_pct_bic = (res["bic"] - best_bic) / abs(best_bic) * 100
+#             diff_bic[nom].append(diff_pct_bic)
+
+# # ---------------------------------------------------
+
+# def stats_scores_fittings(resultats):
+#     """ Calcule les scores AIC et BIC pour chaque distribution et
+#     détermine la meilleure distribution selon ces scores. Fais une
+#     statistique sur les comparaisons relatives entre les distributions. 
+#     Args:
+#         resultats (list): Liste de dictionnaires contenant les résultats 
+#         du fitting pour chaque distribution 
+        
+#     Returns:
+#         best (dict): Dictionnaire contenant le recapitulatif de la meilleure 
+#         distribution"""
+
+#     compteur_dist = {nom: 0 for nom in DIST.keys()}
+#     diff_aic = {nom: [] for nom in DIST.keys()}
+#     diff_bic = {nom: [] for nom in DIST.keys()}
+
+#     best = min(resultats, key=lambda x: x['bic'])
+#     # compteur_dist[best['nom']] += 1
+#     best_aic = best['aic']
+#     best_bic = best['bic']
+
+#     diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats)
+#     recap_stats_scores(diff_aic, diff_bic)
+#     # recap_stats_scores(compteur_dist, diff_aic, diff_bic)
+
+#     return best
+
+# def recap_stats_scores(diff_aic, diff_bic, compteur_dist=None):
+#     # print("\n\nMeilleures distributions:", dict(compteur_dist))
+
+#     mean_diff_aic = {k: np.mean(v) for k, v in diff_aic.items()}
+#     mean_diff_bic = {k: np.mean(v) for k, v in diff_bic.items()}
+
+#     print("Moyenne (%) difference AIC:")
+#     print(mean_diff_aic)
+
+#     print("\nMoyenne (%) difference BIC:")
+#     print(mean_diff_bic)
+#     return
+   
+
+def diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats_methode):
+    """
+    resultats_methode =
+    {
+        "gamma": {...},
+        "norm": {...},
+        "lognorm": {...}
+    }
+    """
+
+    for nom, res in resultats_methode.items():
+
         if best_aic != 0:
             diff_pct_aic = (res["aic"] - best_aic) / abs(best_aic) * 100
             diff_aic[nom].append(diff_pct_aic)
@@ -81,46 +144,131 @@ def diff_best (best_aic, best_bic, diff_aic, diff_bic, resultats):
             diff_pct_bic = (res["bic"] - best_bic) / abs(best_bic) * 100
             diff_bic[nom].append(diff_pct_bic)
 
-# ---------------------------------------------------
+from pathlib import Path
 
-def stats_scores_fittings(resultats):
-    """ Calcule les scores AIC et BIC pour chaque distribution et
-    détermine la meilleure distribution selon ces scores. Fais une
-    statistique sur les comparaisons relatives entre les distributions. 
-    Args:
-        resultats (list): Liste de dictionnaires contenant les résultats 
-        du fitting pour chaque distribution 
-        
-    Returns:
-        best (dict): Dictionnaire contenant le recapitulatif de la meilleure 
-        distribution"""
+def stats_scores_fittings(resultats, ruta_txt):
 
-    compteur_dist = {nom: 0 for nom in DIST.keys()}
-    diff_aic = {nom: [] for nom in DIST.keys()}
-    diff_bic = {nom: [] for nom in DIST.keys()}
+    methodes = ["simple_auto", "simple_manuel", "double"]
 
-    best = min(resultats, key=lambda x: x['bic'])
-    # compteur_dist[best['nom']] += 1
-    best_aic = best['aic']
-    best_bic = best['bic']
+    recap = {}
 
-    diff_best(best_aic, best_bic, diff_aic, diff_bic, resultats)
-    recap_stats_scores(diff_aic, diff_bic)
-    # recap_stats_scores(compteur_dist, diff_aic, diff_bic)
+    with open(ruta_txt, "w", encoding="utf-8") as f:
 
-    return best
+        f.write("STATISTIQUES DES FITTINGS\n")
+        f.write("="*60 + "\n\n")
 
-def recap_stats_scores(diff_aic, diff_bic, compteur_dist=None):
-    # print("\n\nMeilleures distributions:", dict(compteur_dist))
+        for methode in methodes:
 
-    mean_diff_aic = {k: np.mean(v) for k, v in diff_aic.items()}
-    mean_diff_bic = {k: np.mean(v) for k, v in diff_bic.items()}
+            compteur_aic = {nom: 0 for nom in DIST.keys()}
+            compteur_bic = {nom: 0 for nom in DIST.keys()}
 
-    print("Moyenne (%) difference AIC:")
+            diff_aic = {nom: [] for nom in DIST.keys()}
+            diff_bic = {nom: [] for nom in DIST.keys()}
+
+            for quantile, res_quantile in resultats.items():
+
+                res_methode = {
+                    nom: res_quantile[nom][methode]
+                    for nom in DIST.keys()
+                }
+
+                best_nom_aic = min(
+                    res_methode,
+                    key=lambda d: res_methode[d]["aic"]
+                )
+
+                best_nom_bic = min(
+                    res_methode,
+                    key=lambda d: res_methode[d]["bic"]
+                )
+
+                compteur_aic[best_nom_aic] += 1
+                compteur_bic[best_nom_bic] += 1
+
+                best_aic = res_methode[best_nom_aic]["aic"]
+                best_bic = res_methode[best_nom_bic]["bic"]
+
+                diff_best(
+                    best_aic,
+                    best_bic,
+                    diff_aic,
+                    diff_bic,
+                    res_methode
+                )
+
+            recap[methode] = recap_stats_scores(
+                compteur_aic,
+                compteur_bic,
+                diff_aic,
+                diff_bic,
+                f,
+                methode
+            )
+
+    return recap
+
+def recap_stats_scores(compteur_aic,
+                       compteur_bic,
+                       diff_aic,
+                       diff_bic,
+                       fichier,
+                       methode):
+
+    mean_diff_aic = {
+        k: np.mean(v) if len(v) else np.nan
+        for k, v in diff_aic.items()
+    }
+
+    mean_diff_bic = {
+        k: np.mean(v) if len(v) else np.nan
+        for k, v in diff_bic.items()
+    }
+
+    # -------- Affichage terminal --------
+
+    print(f"\n========== {methode.upper()} ==========\n")
+
+    print("Victoires AIC")
+    print(compteur_aic)
+
+    print("\nVictoires BIC")
+    print(compteur_bic)
+
+    print("\nDifférence moyenne (%) AIC")
     print(mean_diff_aic)
 
-    print("\nMoyenne (%) difference BIC:")
+    print("\nDifférence moyenne (%) BIC")
     print(mean_diff_bic)
-    return
-   
+
+    # -------- Écriture fichier --------
+
+    fichier.write(f"========== {methode.upper()} ==========\n\n")
+
+    fichier.write("Victoires AIC\n")
+    for dist, n in compteur_aic.items():
+        fichier.write(f"    {dist:<12} : {n}\n")
+
+    fichier.write("\nVictoires BIC\n")
+    for dist, n in compteur_bic.items():
+        fichier.write(f"    {dist:<12} : {n}\n")
+
+    fichier.write("\nDifférence moyenne (%) AIC\n")
+    for dist, val in mean_diff_aic.items():
+        fichier.write(f"    {dist:<12} : {val:.3f}\n")
+
+    fichier.write("\nDifférence moyenne (%) BIC\n")
+    for dist, val in mean_diff_bic.items():
+        fichier.write(f"    {dist:<12} : {val:.3f}\n")
+
+    fichier.write("\n")
+    fichier.write("-"*60)
+    fichier.write("\n\n")
+
+    return {
+        "wins_aic": compteur_aic,
+        "wins_bic": compteur_bic,
+        "mean_diff_aic": mean_diff_aic,
+        "mean_diff_bic": mean_diff_bic,
+    }
+
 
