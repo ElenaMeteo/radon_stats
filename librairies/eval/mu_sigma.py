@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 
 from ..constantes import *
+from ..documents.ad_dependantes import loc_graphs_regression
 
 def plot_regression(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
     """
@@ -187,14 +188,17 @@ def regression_params(resultats_all_q, yA_abscisses):
     # Distribution log-norm pour fitting simple
     mu_simple, sigma_simple, _ = extract_mean_std(resultats_all_q, "simple_manuel", "log-norm")
 
+    # Localisation selon circonstances
+    AD_MOY, AD_ECT = loc_graphs_regression()
+
     plot_regression(
         yA_abscisses, 
         mu_simple, 
         xlabel, 
         ylabel_mu, 
         titre_mu_simple, 
-        REG_10Q_FILTRE_MOY, 
-        nom_doc="mu_simple")
+        AD_MOY, 
+        nom_doc="mu_simple_eau_alt")
     
     plot_regression(
         yA_abscisses, 
@@ -202,8 +206,8 @@ def regression_params(resultats_all_q, yA_abscisses):
         xlabel, 
         ylabel_sigma, 
         titre_mu_simple,
-        REG_10Q_FILTRE_ECT,
-        nom_doc="sigma_simple_id")
+        AD_ECT,
+        nom_doc="sigma_simple_id_eau_alt")
 
     # Distribution gamma pour fitting double
     # mu_double, sigma_double, weights = extract_mean_std(resultats_all_q, "double", "gamma")

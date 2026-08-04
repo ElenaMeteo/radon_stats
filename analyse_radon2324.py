@@ -22,6 +22,8 @@ from librairies.exe_analyse.yA_yB_org import dict_yAyB_by_quantiles, dict_yA_yB_
 from librairies.eval.scores import stats_scores_fittings
 from librairies.eval.mu_sigma import regression_params
 
+from librairies.maillage_et_stations.stations_zone import eligibilite_stations
+
 from librairies.documents.org_lecture_calcul import lecture_ou_calcul
 
 
@@ -33,25 +35,30 @@ def main():
 
     # Adresses des données
     adresse = STRUCTURE_BD / "dict_adresses_all_bd.json"
-    dict_adresses = lecture_ou_calcul(adresse, structure_donnees, "dict_adresses_all_bd.json", force=False)
+    dict_adresses = lecture_ou_calcul(adresse, structure_donnees, "dict_adresses_all_bd.json", force=True)
     print("Dictionnaire d'adresses chargé avec succès.")
 
     # Coordonnées des stations
     adresse = STRUCTURE_BD / "dict_coords_all_bd.json"
-    dict_coords = lecture_ou_calcul(adresse, structure_donnees, "dict_coords_all_bd.json", force=False)
+    dict_coords = lecture_ou_calcul(adresse, structure_donnees, "dict_coords_all_bd.json", force=True)
     print("Dictionnaire de coordonnées chargé avec succès.")
 
     # Valeurs (simu/obs) des stations
     adresse = STRUCTURE_BD / "dict_vals_all_bd.json"
-    dict_vals = lecture_ou_calcul(adresse, structure_donnees, "dict_vals_all_bd.json",  force=False)
+    dict_vals = lecture_ou_calcul(adresse, structure_donnees, "dict_vals_all_bd.json",  force=True)
     print("Dictionnaire de valeurs chargé avec succès.")
+
+    # Stations éligibles (eau et altitude)
+    adresse = STRUCTURE_BD / "dict_eligible_stations.json"
+    dict_stations_eligibles = lecture_ou_calcul(adresse, eligibilite_stations, "dict_eligible_stations.json", force=True)
+    print("Dictionnaire de stations éligibles chargé avec succès.")
 
     # Maille
     adresse = MAILLES / f"maille_{DELTA}km.json"
     dict_maille = lecture_ou_calcul(adresse, 
                                     lambda: def_maille(dict_coords), 
                                     f"maille_{DELTA}km.json",
-                                    force=False)
+                                    force=True)
     print("Dictionnaire de mailles chargé avec succès.")
 
     # Traîtement des données
@@ -62,7 +69,7 @@ def main():
     dict_yAyB_filtre = lecture_ou_calcul(adresse, 
                                   lambda: dict_yA_yB_filtre(dict_maille, dict_vals), 
                                   "dict_yAyB_filtre.json",
-                                  force=False)
+                                  force=True)
     print("Dictionnaire yAyB filtré chargé avec succès.")
     
     # yA et yB non filtrés
@@ -70,7 +77,7 @@ def main():
     dict_yAyB_sans_filtre = lecture_ou_calcul(adresse, 
                                   lambda: dict_yA_yB_sans_filtre(dict_maille, dict_vals), 
                                   "dict_yAyB_sans_filtre.json",
-                                  force=False)
+                                  force=True)
     print("Dictionnaire yAyB non filtré chargé avec succès.")
 
     if (FILTRE == True):
@@ -83,7 +90,7 @@ def main():
     dict_by_quantiles = lecture_ou_calcul(adresse, 
                                           lambda: dict_yAyB_by_quantiles(dict_yAyB), 
                                           "dict_yAyB_by_quantiles.json",
-                                          force=False)
+                                          force=True)
     print("Dictionnaire yAyB par quantiles chargé avec succès.")
     print("Número de quantiles:", len(dict_by_quantiles))
     # Analyse des yA

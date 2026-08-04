@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from ..constantes import *
 from ..securite import check_vecteur_vide, check_vecteur_nan
 from librairies.eval.scores import stats_scores_fittings
+from librairies.documents.ad_dependantes import loc_graphs_fitting
 
 class Graphs: 
 
@@ -178,11 +179,11 @@ def graphs_eval_simple_et_double (yB:np.ndarray, quantile:str, info_quantile:dic
         type (string): type de graphique """
     
     yA_range = info_quantile['yA_range']
+
+    AD_DIST, AD_EVAL = loc_graphs_fitting()
     
     graphs_fitting = Graphs(yB, yA_range, quantile, n_methodes)
-    graphs_fitting.graph_dist(GRAPH_10Q_NEVAL_FILTRE)
-    graphs_fitting.graph_eval_n_methodes(resultats_fitting, GRAPH_10Q_3EVAL_FILTRE)
+    graphs_fitting.graph_dist(AD_DIST)
+    graphs_fitting.graph_eval_n_methodes(resultats_fitting, AD_EVAL)
     
-    
-
     

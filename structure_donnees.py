@@ -10,6 +10,7 @@ from librairies.constantes import *
 
 from librairies.documents.fichiers import lecture_json, lecture_col, lecture_csv
 from librairies.documents.docs import docs_dict_to_json_generique
+from librairies.documents.ad_dependantes import loc_bd, loc_json_structure_bd
 
 from librairies.exe_analyse.gamma_data import dict_simu_vs_obs, combiner_n_dicts
 
@@ -128,8 +129,8 @@ def structure_donnees () -> dict:
         refN: valsN (all bd)
     }
     """
-
-    ad_dict_bd = Path(DATA_ALL_BD)
+    AD_BD = loc_bd()
+    ad_dict_bd = Path(AD_BD)
 
     # On extrait les données json
     data_bd = lecture_json(ad_dict_bd)
@@ -171,10 +172,13 @@ def structure_donnees () -> dict:
     dict_vals_all = combiner_n_dicts(*dict_vals_comm.values())
 
     # Écriture des dictionnaires dans des archives json
-    ad_dict_ad = dossier_json / "structure_bd" / "dict_adresses_all_bd.json"
-    ad_dict_coords = dossier_json / "structure_bd" / "dict_coords_all_bd.json"
-    ad_dict_vals_diff_bd = dossier_json / "structure_bd" / "dict_vals_diff_bd.json"
-    ad_dict_vals_all_bd = dossier_json / "structure_bd" / "dict_vals_all_bd.json"
+
+    AD_STRUCTURE_BD = loc_json_structure_bd()
+
+    ad_dict_ad = AD_STRUCTURE_BD / "dict_adresses_all_bd.json"
+    ad_dict_coords = AD_STRUCTURE_BD / "dict_coords_all_bd.json"
+    ad_dict_vals_diff_bd = AD_STRUCTURE_BD / "dict_vals_diff_bd.json"
+    ad_dict_vals_all_bd = AD_STRUCTURE_BD / "dict_vals_all_bd.json"
 
     docs_dict_to_json_generique(dict_adresses, ad_dict_ad)
     docs_dict_to_json_generique(dict_coords_comm, ad_dict_coords)

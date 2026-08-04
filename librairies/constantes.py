@@ -9,20 +9,17 @@ from pathlib import Path
 # Paramètres à ajuster
 ######################
 
-DATA_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_all_bd.json"
+FILTRE_EAU_ALT = True # True si on veut filtrer les données par eau et altitude, False sinon
 DELTA = 40 # Delta du maillage en km
 N_QUANTILES = 10 # Nombre de quantiles pour la séparation des données
-FILTRE = False # True si on veut filtrer les données par pics, False sinon
+FILTRE_PIC_RADON = False # True si on veut filtrer les données par pics, False sinon
 
 
 # JSON
 ######
 
-# Adresses aux données
-DATA_23 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all23/adresses_mac_min5.json"
-DATA_24 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all24/adresses_mac_min5.json"
-DATA_06_25 = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_juin25/adresses_mac_min5.json"
-# DATA = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/json/adresses.json"
+DATA_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_all_bd.json"
+DATA_EAU_ALT = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_eau_alt_bd.json"
 
 # Adresses aux produits 
 MAILLES = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/mailles")
@@ -31,17 +28,35 @@ YAYB = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/yAyB"
 JSON = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json")    
 
 # Adresses graphiques
-GRAPH_10Q_3EVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/3eval/avec_filtre"
-GRAPH_10Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/3eval/sans_filtre"
+# Toutes stations de mesure
+# 10 quantiles
+GRAPH_10Q_3EVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_10q/3eval/avec_filtre"
+GRAPH_10Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_10q/3eval/sans_filtre"
 
-GRAPH_10Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/sans_eval/avec_filtre"
-GRAPH_10Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_10q/sans_eval/sans_filtre"
+GRAPH_10Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_10q/sans_eval/avec_filtre"
+GRAPH_10Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_10q/sans_eval/sans_filtre"
 
-GRAPH_20Q_3EVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/3eval/avec_filtre"
-GRAPH_20Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/3eval/sans_filtre"
+# 20 quantiles
+GRAPH_20Q_3EVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_20q/3eval/avec_filtre"
+GRAPH_20Q_3EVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_20q/3eval/sans_filtre"
 
-GRAPH_20Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/sans_eval/avec_filtre"
-GRAPH_20Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/yAyB_20q/sans_eval/sans_filtre"
+GRAPH_20Q_NEVAL_FILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_20q/sans_eval/avec_filtre"
+GRAPH_20Q_NEVAL_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/all_data/yAyB_20q/sans_eval/sans_filtre"
+
+# Filtre eau et altitude
+# 10 quantiles
+GRAPH_10Q_3EVAL_FILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_10q/3eval/avec_filtre"
+GRAPH_10Q_3EVAL_NFILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_10q/3eval/sans_filtre"
+
+GRAPH_10Q_NEVAL_FILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_10q/sans_eval/avec_filtre"
+GRAPH_10Q_NEVAL_NFILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_10q/sans_eval/sans_filtre"
+
+# 20 quantiles
+GRAPH_20Q_3EVAL_FILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_20q/3eval/avec_filtre"
+GRAPH_20Q_3EVAL_NFILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_20q/3eval/sans_filtre"
+
+GRAPH_20Q_NEVAL_FILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_20q/sans_eval/avec_filtre"
+GRAPH_20Q_NEVAL_NFILTRE_EA = "/Users/elena/Documents/These/Graphiques/analyse_radon/aprox_dist/eau_alt/yAyB_20q/sans_eval/sans_filtre"
 
 # Adresses stats résultats
 RESUT_10Q = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/result_10q"
@@ -50,11 +65,13 @@ RESUT_20Q = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/resul
 # Adresse graphiques régression
 REG_10Q_FILTRE_MOY = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/avec_filtre/mu"
 REG_10Q_FILTRE_ECT = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/avec_filtre/sigma"
-REG_10Q_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/sans_filtre"
+REG_10Q_NFILTRE_MOY = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/sans_filtre/mu"
+REG_10Q_NFILTRE_ECT = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_10q/sans_filtre/sigma"
 
-REG_20Q_FILTRE_SQRT = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/avec_filtre/sqrt_yA"
-REG_20Q_FILTRE_LOG = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/avec_filtre/log_yA"
-REG_20Q_NFILTRE = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/sans_filtre"
+REG_20Q_FILTRE_MOY = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/avec_filtre/mu"
+REG_20Q_FILTRE_ECT = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/avec_filtre/sigma"
+REG_20Q_NFILTRE_MOY = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/sans_filtre/mu"
+REG_20Q_NFILTRE_ECT = "/Users/elena/Documents/These/Graphiques/analyse_radon/regression_params/regre_20q/sans_filtre/sigma"
 
 # Data geopandas
 NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"
@@ -80,6 +97,8 @@ VALSIMU = "Simulated gamma dose rate (nSv/h)"
 NOBS = 721
 COORD_X = "latitude"
 COORD_Y = "longitude"
+EAU = "sea_coverage"
+ALT = "altitude"
 
 # Seuil des pics
 PIC = 10

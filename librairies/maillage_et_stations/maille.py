@@ -85,8 +85,9 @@ def maille_france(lat:np.ndarray, lon:np.ndarray) -> np.ndarray:
 
 def dict_min5(maille:np.ndarray, dict_coords:dict):
     """ Parcourt la maille carré par carré et compte le nombre de stations
-    dans chacun. Si le nombre de stations est supérieur ou égal à MIN_STAT,
-    on ajoute la maille à un double dictionnaire.
+    dans chacun après avoir passé un filtre concernant l'égibilité de la
+    station (proximité à l'eau et altitude). Si le nombre de stations est 
+    supérieur ou égal à MIN_STAT, on ajoute la maille à un double dictionnaire. 
 
     Args:
         maille (list): sortie de maille_france, liste de listes de tuples 

@@ -5,7 +5,10 @@
 """Ce fichier contient les fonctions qui gèrent les 
 stations d'une zone donnée"""
 
+from ..constantes import *
+
 from librairies.documents.fichiers_erreur import coord
+from librairies.documents.fichiers import lecture_col
 
 def cont_stat(p1, p2, p3, p4, dict_coords):
     """
@@ -99,5 +102,47 @@ def dict_coord_stats(data):
 
             lat, lon = coord(adresse)
             dict[ref] = [lat, lon]
+
+    return dict
+
+def eligibilite(adresse):
+    """Vérifie si une station est éligible pour l'analyse 
+    (proximité à l'eau et altitude) en utilisant l'adresse 
+    comme référence
+    
+    Args: 
+        adresse (str): l'adresse de la station
+    Returns:
+        bool: True si la station est éligible, False sinon
+    """
+
+    eau = lecture_col(adresse, EAU).iloc[0]
+    return eau == 0
+    
+
+def eligibilite_stations(data):
+    """Sort un dictionnaire qui contient les 
+    informations sur les stations éligibles à la
+    comparaison entre simu et obs (proximité à l'eau
+    et altitude) en utilisant l'adresse comme référence
+    
+    Args: 
+        data (tableau): la totalité des adresses à toutes
+        les stations
+    Returns: 
+        dict_coord (dict): dictionnaire qui organise les 
+        coordonnées par station en utilisant l'adresse comme référence"""
+    
+    dict = {}
+
+    for bloc in data["adresses"]:
+
+        for ref, adresse in bloc.items():
+            if ref == "dep":
+                continue
+
+            eligible = eligibilite(adresse)
+            if eligible==True:
+                dict[ref] = adresse
 
     return dict
