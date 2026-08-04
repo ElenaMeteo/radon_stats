@@ -7,6 +7,8 @@ from scipy.stats import kstest, gamma
 from ..constantes import *
 from ..eval.scores import llog, aic, bic
 from .parametres import parms_mu_sigma
+from ..fitting_par_classes.fitting_classe import fitting_simple_et_double
+from ..fitting_par_classes.graphs_classe import graphs_eval_simple_et_double
 
 # Fitting simple
 ################
@@ -49,7 +51,7 @@ def fit (resultats, y_bis, dep=None):
             print(f"Fit skipped for {nom}: paramètres NaN retournés.")
             continue
 
-        #! On veut µ et sigma: pour gamma on doit convertir
+        #! On veut mu et sigma: pour gamma on doit convertir
         if dist == gamma:
             k_g, _, th_g = params
             mu, sigma = parms_mu_sigma(k_g, th_g)
@@ -127,5 +129,37 @@ def dict_fit_yB(dict_by_quantiles):
 
     return dict_fit
 
-# Fitting double 
 
+def fit_et_plot_par_quantile (dict_by_quantiles):
+    """ Fait un fitting des yB quantiles pour chaque yA dans bins
+    et retourne un dictionnaire avec les paramètres de la distribution 
+    gamma pour chaque yA, ainsi que les graphiques correspondants.
+    Args:
+        dict_by_quantiles (dict): un dictionnaire avec les quantiles comme 
+        clés et les informations correspondantes comme valeurs. """
+
+    resultats_all_q = {}
+    yA_abs = []
+    for ref, values in dict_by_quantiles.items():
+
+        yA = values['yA']
+        vecteur_yA = np.array([float(x) for x in yA])
+        yA_abs.append(sum(vecteur_yA)/len(vecteur_yA))
+
+        yB = values['yB']
+        yB_flat = np.concatenate(yB).astype(float)
+        print(f"\nEssai triple fitting avec {ref}\n\n")
+
+        # Fitting
+    
+        resultats_all_q[ref] = fitting_simple_et_double(yB=yB_flat, dossier_json=JSON)
+
+        # Plot
+        graphs_eval_simple_et_double(
+            yB=yB_flat, 
+            quantile=ref, 
+            info_quantile=dict_by_quantiles[ref], 
+            resultats_fitting=resultats_all_q[ref]
+        )
+
+    return resultats_all_q, yA_abs

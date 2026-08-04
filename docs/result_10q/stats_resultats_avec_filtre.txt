@@ -4,24 +4,24 @@ STATISTIQUES DES FITTINGS
 ========== SIMPLE_AUTO ==========
 
 Victoires AIC
-    norm         : 0
-    gamma        : 2
+    norm         : 1
+    gamma        : 1
     log-norm     : 8
 
 Victoires BIC
-    norm         : 0
-    gamma        : 2
+    norm         : 1
+    gamma        : 1
     log-norm     : 8
 
 Différence moyenne (%) AIC
-    norm         : nan
-    gamma        : nan
-    log-norm     : nan
+    norm         : 19.605
+    gamma        : 68.814
+    log-norm     : 5.660
 
 Différence moyenne (%) BIC
-    norm         : nan
-    gamma        : nan
-    log-norm     : nan
+    norm         : 19.591
+    gamma        : 68.797
+    log-norm     : 5.658
 
 ------------------------------------------------------------
 
@@ -29,47 +29,47 @@ Différence moyenne (%) BIC
 
 Victoires AIC
     norm         : 0
-    gamma        : 3
-    log-norm     : 7
+    gamma        : 0
+    log-norm     : 10
 
 Victoires BIC
     norm         : 0
-    gamma        : 3
-    log-norm     : 7
+    gamma        : 0
+    log-norm     : 10
 
 Différence moyenne (%) AIC
-    norm         : 75.714
-    gamma        : 0.267
-    log-norm     : 0.032
+    norm         : 35.769
+    gamma        : 0.585
+    log-norm     : 0.000
 
 Différence moyenne (%) BIC
-    norm         : 75.708
-    gamma        : 0.267
-    log-norm     : 0.032
+    norm         : 35.730
+    gamma        : 0.584
+    log-norm     : 0.000
 
 ------------------------------------------------------------
 
 ========== DOUBLE ==========
 
 Victoires AIC
-    norm         : 1
-    gamma        : 8
-    log-norm     : 1
+    norm         : 0
+    gamma        : 5
+    log-norm     : 5
 
 Victoires BIC
-    norm         : 1
-    gamma        : 8
-    log-norm     : 1
+    norm         : 0
+    gamma        : 5
+    log-norm     : 5
 
 Différence moyenne (%) AIC
-    norm         : 44.853
-    gamma        : 4.474
-    log-norm     : 5.222
+    norm         : 34.264
+    gamma        : 0.123
+    log-norm     : 0.245
 
 Différence moyenne (%) BIC
-    norm         : 44.848
-    gamma        : 4.474
-    log-norm     : 5.222
+    norm         : 34.195
+    gamma        : 0.123
+    log-norm     : 0.245
 
 ------------------------------------------------------------
 

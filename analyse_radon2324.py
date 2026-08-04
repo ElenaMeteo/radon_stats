@@ -8,38 +8,22 @@ d'une façon différente qu'avec la version 0625
 puisqu'on va traiter les stations individuellement
 et pas par département"""
 
-import numpy as np
-import matplotlib.pyplot as plt
 from pathlib import Path
-from collections import defaultdict
+
+
+from structure_donnees import structure_donnees
+from def_maille import def_maille
 
 from librairies.constantes import *
-from structure_donnees import structure_donnees
 
-from librairies.documents.fichiers_erreur import coord_obt
-from librairies.documents.fichiers import lecture_json
-from librairies.documents.docs import docs_dict_yAyB_to_json, docs_dict_by_quantiles_to_json
-
-from librairies.exe_analyse.fitting import dict_fit_yB
-from librairies.exe_analyse.gamma_data import dict_yAyB_by_quantiles
-
-from librairies.maillage_et_stations.maille import maille_exe, dict_min5, dict_yA_yB_filtre, dict_yA_yB_sans_filtre
-from librairies.maillage_et_stations.stations_zone import dict_coord_stats
-
-from librairies.graphs.graphs_yA import graph_yA_yB, graph_hist_equit, graph_params_yA
-from librairies.graphs.graphs_distributions import exec_graph_dist, graph_eval
-from librairies.graphs.graphs_tout_en_1 import graph_dist_tout_en_1, graph_eval_tout_en_1
-
-from librairies.fitting_par_classes.fitting_classe import fitting_simple_et_double
-from librairies.fitting_par_classes.graphs_classe import graphs_eval_simple_et_double
+from librairies.exe_analyse.fitting import fit_et_plot_par_quantile
+from librairies.exe_analyse.yA_yB_org import dict_yAyB_by_quantiles, dict_yA_yB_filtre, dict_yA_yB_sans_filtre
 
 from librairies.eval.scores import stats_scores_fittings
 from librairies.eval.mu_sigma import regression_params
 
-# Là on va garder nos résultats .csv
-dossier = Path(__file__).parent
-dossier_docs = dossier / "docs"
-dossier_json = dossier / "json"
+from librairies.documents.org_lecture_calcul import lecture_ou_calcul
+
 
 def main():
     """Execute main script"""
@@ -47,122 +31,70 @@ def main():
     # Données initales
     ##################
 
-    # Lecture document référence pour coordonnées
-    # data23 = lecture_json(NOM_DATA_23)
+    # Adresses des données
+    adresse = STRUCTURE_BD / "dict_adresses_all_bd.json"
+    dict_adresses = lecture_ou_calcul(adresse, structure_donnees, "dict_adresses_all_bd.json", force=False)
+    print("Dictionnaire d'adresses chargé avec succès.")
 
-    # # Coordonnées stations
-    # dict_coord = dict_coord_stats(data23)
-    # print("Fin de la création du dictionnaire des coordonnées des stations")
-    # coords, ad_all = coord_obt(dict_coord)
+    # Coordonnées des stations
+    adresse = STRUCTURE_BD / "dict_coords_all_bd.json"
+    dict_coords = lecture_ou_calcul(adresse, structure_donnees, "dict_coords_all_bd.json", force=False)
+    print("Dictionnaire de coordonnées chargé avec succès.")
 
-    """ Ces dictionnaires sont disponibles une fois 
-    'structure_donnees.py' a été éxecuté """
-    dict_ad = lecture_json(AD_ADRESSES_ALL_BD)
-    dict_coords = lecture_json(AD_COORDS_ALL_BD)
-    dict_vals = lecture_json(AD_VALS_ALL_BD)
+    # Valeurs (simu/obs) des stations
+    adresse = STRUCTURE_BD / "dict_vals_all_bd.json"
+    dict_vals = lecture_ou_calcul(adresse, structure_donnees, "dict_vals_all_bd.json",  force=False)
+    print("Dictionnaire de valeurs chargé avec succès.")
 
     # Maille
-    ########
-
-    maille = maille_exe(dict_coords)
-    print("Fin de la création de la maille")
-
-    # Filtrations des mailles contenant assez de stations
-    dict_maille = dict_min5(maille, dict_coords)
-    print("Fin de la filtration des mailles")
+    adresse = MAILLES / f"maille_{DELTA}km.json"
+    dict_maille = lecture_ou_calcul(adresse, 
+                                    lambda: def_maille(dict_coords), 
+                                    f"maille_{DELTA}km.json",
+                                    force=False)
+    print("Dictionnaire de mailles chargé avec succès.")
 
     # Traîtement des données
     ########################
 
-    # Séparation en yB et yA associés
-    dict_yAyB = dict_yA_yB_filtre(dict_maille, dict_vals) # On applique le filtre de pic
-    #dict_yAyB = dict_yA_yB_sans_filtre(dict_maille, dict_vals) # On applique aucun filtre
-    print("Fin de l'analyse des pics dans les mailles filtrées")
+    # yA et yB filtrés
+    adresse = Path(YAYB / "dict_yAyB_filtre.json")
+    dict_yAyB_filtre = lecture_ou_calcul(adresse, 
+                                  lambda: dict_yA_yB_filtre(dict_maille, dict_vals), 
+                                  "dict_yAyB_filtre.json",
+                                  force=False)
+    print("Dictionnaire yAyB filtré chargé avec succès.")
+    
+    # yA et yB non filtrés
+    adresse = Path(YAYB / "dict_yAyB_sans_filtre.json")
+    dict_yAyB_sans_filtre = lecture_ou_calcul(adresse, 
+                                  lambda: dict_yA_yB_sans_filtre(dict_maille, dict_vals), 
+                                  "dict_yAyB_sans_filtre.json",
+                                  force=False)
+    print("Dictionnaire yAyB non filtré chargé avec succès.")
 
-    # Écriture du dictionnaire organisé par yA/yB
-    ad_dict_yAyB = dossier_json / "dict_yAyB.json"
-    docs_dict_yAyB_to_json(dict_yAyB, ad_dict_yAyB)
-    print(f"Fin de l'écriture de dict_yAyB dans {ad_dict_yAyB}")
+    if (FILTRE == True):
+        dict_yAyB = dict_yAyB_filtre
+    else:
+        dict_yAyB = dict_yAyB_sans_filtre
 
     # Separation par quantiles de yA
-    dict_by_quantiles = dict_yAyB_by_quantiles(dict_yAyB)
-    print(f"\nSeparation par quantiles de yA:")
-
-    # Écriture du dictionnaire organisé par quantiles de yA
-    ad_dict_yAyB_quant = dossier_json / "dict_yAyB_quantiles.json"
-    docs_dict_by_quantiles_to_json(dict_by_quantiles, ad_dict_yAyB_quant)
-    print(f"Fin de l'écriture de dict_yAyB dans {ad_dict_yAyB_quant}")
-
-    # Analyse des valeurs yA
-    """ Bloc fait afin de voir la portée des données 
-    qui sont en dessous d'un seuil """
-    cont_yA = 0
-    ref_yA = []
-    cont_yA_all = 0
-    for ref, values in dict_yAyB.items():
-        yA = values.get("yA")
-        cont_yA_all += 1
-        if isinstance(yA, (int, float, np.floating, np.integer)) and yA < 2:
-            cont_yA += 1
-            ref_yA.append(ref)
-    print(f"Nombre de stations avec yA < 2 : {cont_yA}")
-    print(f"Références des stations avec yA < 2 : {ref_yA}")
-    print(f"Nombre total de yA : {cont_yA_all}")
-
-    # Graphiques
-    ############
-    
-    # Scatters des yB en fonction de yA
-    # graph_yA_yB(dict_yAyB, xlabel="yA", ylabel="yB", titre="yB en fonction de yA")
-    print("Fin de la génération du graphique yB en fonction de yA")
-
-    # Histogramme de yB
-    #par_bin, bins = graph_hist_equit(dict_by_quantiles)
-    print("Fin de la génération de l'histogramme de yB")
-
-    # Graphique de yB en fonction du quantile de yA
-    # exec_graph_dist(dict_by_quantiles)
-    # graph_dist_tout_en_1(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="Signal gamma observé (yB, nSv/h)", ylabel="Fréquence")
-    print("Fin de la génération des graphiques de yB en fonction de yA à partir de l'histogramme")
+    adresse = Path(YAYB / "dict_yAyB_by_quantiles.json")
+    dict_by_quantiles = lecture_ou_calcul(adresse, 
+                                          lambda: dict_yAyB_by_quantiles(dict_yAyB), 
+                                          "dict_yAyB_by_quantiles.json",
+                                          force=False)
+    print("Dictionnaire yAyB par quantiles chargé avec succès.")
+    print("Número de quantiles:", len(dict_by_quantiles))
+    # Analyse des yA
 
     # Fitting par quantile
     ######################
-
-    # graph_eval(dict_by_quantiles, titre="yB en fonction du quantile de yA", xlabel="yA", ylabel="yB", type=HIST, eval=EVAL)
-    # graph_eval_tout_en_1(dict_by_quantiles, 
-    #                      titre="Fitting distribution yB en fonction du quantile de yA", 
-    #                      xlabel="Signal gamma observé (yB, nSv/h)", 
-    #                      ylabel="Fréquence", 
-    #                      type=HIST, 
-    #                      eval=EVAL)
     
-    # CODE FAIT AVEC DES CLASSES
-    resultats_all_q = {}
-    yA_abs = []
-    for ref, values in dict_by_quantiles.items():
-
-        yA = values['yA']
-        vecteur_yA = np.array([float(x) for x in yA])
-        yA_abs.append(sum(vecteur_yA)/len(vecteur_yA))
-
-        yB = values['yB']
-        yB_flat = np.concatenate(yB).astype(float)
-        print(f"\nEssai triple fitting avec {ref}\n\n")
-
-        # Fitting
-        resultats_all_q[ref] = fitting_simple_et_double(yB=yB_flat, dossier_json=dossier_json)
-
-        # Plot
-        graphs_eval_simple_et_double(
-            yB=yB_flat, 
-            quantile=ref, 
-            info_quantile=dict_by_quantiles[ref], 
-            resultats_fitting=resultats_all_q[ref]
-        )
-    print("Fin du fitting des yB par yA moyen de chaque bin")
-    # plt.show()
-    print("Fin de la génération du graphique des paramètres de la distribution gamma en fonction de yA")
-
+    # Fitting et plots des distributions
+    resultats_all_q, yA_abs = fit_et_plot_par_quantile(dict_by_quantiles)
+    print("resultats_all_q:", resultats_all_q)
+    print("yA_abs:", yA_abs)
     # Statistiques des résultats
     stats_scores_fittings(resultats_all_q, ruta_txt=Path(RESUT_10Q)/"stats_resultats_avec_filtre.txt")
 

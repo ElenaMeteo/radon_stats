@@ -93,7 +93,7 @@ def docs_dict_to_json_generique(dictionnaire, path):
     dict_json = convertir(dictionnaire)
 
     with open(path, mode="w", encoding="utf-8") as write_file:
-        json.dump(dict_json, write_file, ensure_ascii=False, indent=2, sort_keys=True)
+        json.dump(dict_json, write_file, ensure_ascii=False, indent=2)
 
 def docs_dict_yAyB_to_json(dict_yAyB, path):
     """Crée un document .json à partir du dictionnaire dict_yA_yB."""

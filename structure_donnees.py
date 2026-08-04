@@ -87,7 +87,7 @@ class Structure:
         return self.dict_vals
         
 
-def structure_donnees (ad_dict_bd:str) -> dict:
+def structure_donnees () -> dict:
     """ Utilise la classe structure pour structurer les donnees
     de façon à que ce soit unifié. 
 
@@ -128,6 +128,9 @@ def structure_donnees (ad_dict_bd:str) -> dict:
         refN: valsN (all bd)
     }
     """
+
+    ad_dict_bd = Path(DATA_ALL_BD)
+
     # On extrait les données json
     data_bd = lecture_json(ad_dict_bd)
 
@@ -178,18 +181,8 @@ def structure_donnees (ad_dict_bd:str) -> dict:
     docs_dict_to_json_generique(dict_vals, ad_dict_vals_diff_bd)
     docs_dict_to_json_generique(dict_vals_all, ad_dict_vals_all_bd)
 
-    return dict_adresses, dict_coords_comm, dict_vals_all
+    # return dict_adresses, dict_coords_comm, dict_vals_all
 
-def main ():
-    """ Execute le code pour enregister les 
-    données dans le format qui nos convient pour 
-    le reste du projet """
-
-    structure_donnees(NOM_DATA_ALL_BD)
-
-
-if __name__ == "__main__":
-    main()
 
 
 

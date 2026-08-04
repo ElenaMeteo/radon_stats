@@ -163,7 +163,9 @@ def regression_params(resultats_all_q, yA_abscisses):
     concernés par la distribution et ses résultats"""
 
     yA_abscisses = np.array(yA_abscisses)
-    yA_sqrt_abscisses = np.sqrt(yA_abscisses)
+    yA_sqrt = np.sqrt(yA_abscisses)
+    yA_log = np.log(yA_abscisses)
+
 
     # Titre régressions
     xlabel = "yA moyen des quantiles"
@@ -191,76 +193,76 @@ def regression_params(resultats_all_q, yA_abscisses):
         xlabel, 
         ylabel_mu, 
         titre_mu_simple, 
-        REG_10Q_FILTRE, 
+        REG_10Q_FILTRE_MOY, 
         nom_doc="mu_simple")
     
     plot_regression(
-        yA_sqrt_abscisses, 
+        yA_abscisses, 
         sigma_simple, 
         xlabel, 
         ylabel_sigma, 
         titre_mu_simple,
-        REG_10Q_FILTRE,
-        nom_doc="sigma_simple")
+        REG_10Q_FILTRE_ECT,
+        nom_doc="sigma_simple_id")
 
     # Distribution gamma pour fitting double
-    mu_double, sigma_double, weights = extract_mean_std(resultats_all_q, "double", "gamma")
+    # mu_double, sigma_double, weights = extract_mean_std(resultats_all_q, "double", "gamma")
 
-    mu1 = [m[0] for m in mu_double]
-    mu2 = [m[1] for m in mu_double]
+    # mu1 = [m[0] for m in mu_double]
+    # mu2 = [m[1] for m in mu_double]
 
-    sigma1 = [s[0] for s in sigma_double]
-    sigma2 = [s[1] for s in sigma_double]
+    # sigma1 = [s[0] for s in sigma_double]
+    # sigma2 = [s[1] for s in sigma_double]
 
-    w1 = [w[0] for w in weights]
+    # w1 = [w[0] for w in weights]
 
     # Plot premier mu
-    plot_regression(
-        yA_abscisses,
-        mu1,
-        xlabel,
-        ylabel_mu,
-        titre_mu1_double,
-        REG_10Q_FILTRE,
-        nom_doc="mu1"
-    )
-    # Plot deuxième mu
-    plot_regression(
-        yA_abscisses,
-        mu2,
-        xlabel,
-        ylabel_mu,
-        titre_mu2_double,
-        REG_10Q_FILTRE,
-        nom_doc="mu2"
-    )
-    # Plot premier sigma
-    plot_regression(
-        yA_sqrt_abscisses,
-        sigma1,
-        xlabel,
-        ylabel_sigma,
-        titre_sigma1_double,
-        REG_10Q_FILTRE,
-        nom_doc="sigma1"
-    )
-    # Plot deuxième sigma
-    plot_regression(
-        yA_sqrt_abscisses,
-        sigma2,
-        xlabel,
-        ylabel_sigma,
-        titre_sigma2_double,
-        REG_10Q_FILTRE,
-        nom_doc="sigma2"
-    )
-    # Plot weights
-    plot_regression(
-        yA_abscisses,
-        w1,
-        xlabel,
-        ylabel_weights,
-        titre_weights,
-        REG_10Q_FILTRE,
-        nom_doc="weights"
-    )
+    # plot_regression(
+    #     yA_abscisses,
+    #     mu1,
+    #     xlabel,
+    #     ylabel_mu,
+    #     titre_mu1_double,
+    #     REG_10Q_FILTRE,
+    #     nom_doc="mu1"
+    # )
+    # # Plot deuxième mu
+    # plot_regression(
+    #     yA_abscisses,
+    #     mu2,
+    #     xlabel,
+    #     ylabel_mu,
+    #     titre_mu2_double,
+    #     REG_10Q_FILTRE,
+    #     nom_doc="mu2"
+    # )
+    # # Plot premier sigma
+    # plot_regression(
+    #     yA_sqrt_abscisses,
+    #     sigma1,
+    #     xlabel,
+    #     ylabel_sigma,
+    #     titre_sigma1_double,
+    #     REG_10Q_FILTRE,
+    #     nom_doc="sigma1"
+    # )
+    # # Plot deuxième sigma
+    # plot_regression(
+    #     yA_sqrt_abscisses,
+    #     sigma2,
+    #     xlabel,
+    #     ylabel_sigma,
+    #     titre_sigma2_double,
+    #     REG_10Q_FILTRE,
+    #     nom_doc="sigma2"
+    # )
+    # # Plot weights
+    # plot_regression(
+    #     yA_abscisses,
+    #     w1,
+    #     xlabel,
+    #     ylabel_weights,
+    #     titre_weights,
+    #     REG_10Q_FILTRE,
+    #     nom_doc="weights"
+    # )
