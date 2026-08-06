@@ -4,7 +4,6 @@ dans les différentes étapes de l'analyse.
 Les données écrites sont filtrées, passées au bon format et organisées par station."""
 
 import numpy as np
-import json
 
 from librairies.constantes import *
 
@@ -42,7 +41,7 @@ class Structure:
         
         return lat, lon
 
-    def all_info(self):
+    def all_info(self, colonnes):
         """ Actualise les dictionnaires d'informations
         relatives aux adresses, coordonnées et
          valeurs (simu/obs) avec ses valeurs correspondentes.
@@ -64,17 +63,22 @@ class Structure:
                 lat, lon = self._coords(adresse)
                 self.dict_coords[ref] = [lat, lon]
 
-                # Valeurs
-                obs = lecture_col(adresse, VALOBS)
-                simu = lecture_col(adresse, VALSIMU)
-                # On va comparer les vecteurs, donc il faut qu'ils aient du sens
-                if (len(simu) != len(obs)):
-                    mask = np.isfinite(obs) & np.isfinite(simu)
-                    obs = obs[mask]
-                    simu = simu[mask]
+                # Valeurs : on lit chaque colonne indiquée dans `colonnes`
+                valeurs = {
+                    nom_val: lecture_col(adresse, nom_col)
+                    for nom_val, nom_col in colonnes.items()
+                }
 
-                self.dict_vals[ref] = [simu, obs]
-   
+                # On s'assure que tous les vecteurs sont comparables (même longueur / index valides)
+                longueurs = {len(v) for v in valeurs.values()}
+                if len(longueurs) > 1:
+                    mask = np.logical_and.reduce(
+                        [np.isfinite(v) for v in valeurs.values()]
+                    )
+                    valeurs = {nom_val: v[mask] for nom_val, v in valeurs.items()}
+
+                self.dict_vals[ref] = valeurs
+
     def get_ad(self) -> dict:
         """ Transmet le dictionnaire organisant les adresses """
         return self.dict_adresses
@@ -129,8 +133,8 @@ def structure_donnees () -> dict:
         refN: valsN (all bd)
     }
     """
-    AD_BD = loc_bd()
-    ad_dict_bd = Path(AD_BD)
+    ad_bd = loc_bd()
+    ad_dict_bd = Path(ad_bd)
 
     # On extrait les données json
     data_bd = lecture_json(ad_dict_bd)
@@ -138,14 +142,16 @@ def structure_donnees () -> dict:
     dict_adresses = {}
     dict_vals = {} # Séparées par bd
 
+    for i, (ref_bd, bd_info) in enumerate(data_bd.items()):
 
-    for i, (ref_bd, ad_bd) in enumerate(data_bd.items()):
+        bd = bd_info["path"]
+        colonnes_bd = bd_info["colonnes"]
 
         # Initialisation de la classe
-        structure_data = Structure(ad_bd)
+        structure_data = Structure(bd)
 
         # Organisation de l'information
-        structure_data.all_info()
+        structure_data.all_info(colonnes_bd)
 
         # Réception des adresses
         dict_adresses[ref_bd] = structure_data.get_ad()
@@ -168,17 +174,15 @@ def structure_donnees () -> dict:
     }
 
     # Combinaison des dictionnaires de données en 1
-
     dict_vals_all = combiner_n_dicts(*dict_vals_comm.values())
 
     # Écriture des dictionnaires dans des archives json
+    ad_structure_bd = loc_json_structure_bd()
 
-    AD_STRUCTURE_BD = loc_json_structure_bd()
-
-    ad_dict_ad = AD_STRUCTURE_BD / "dict_adresses_all_bd.json"
-    ad_dict_coords = AD_STRUCTURE_BD / "dict_coords_all_bd.json"
-    ad_dict_vals_diff_bd = AD_STRUCTURE_BD / "dict_vals_diff_bd.json"
-    ad_dict_vals_all_bd = AD_STRUCTURE_BD / "dict_vals_all_bd.json"
+    ad_dict_ad = ad_structure_bd / "dict_adresses_all_bd.json"
+    ad_dict_coords = ad_structure_bd / "dict_coords_all_bd.json"
+    ad_dict_vals_diff_bd = ad_structure_bd / "dict_vals_diff_bd.json"
+    ad_dict_vals_all_bd = ad_structure_bd / "dict_vals_all_bd.json"
 
     docs_dict_to_json_generique(dict_adresses, ad_dict_ad)
     docs_dict_to_json_generique(dict_coords_comm, ad_dict_coords)

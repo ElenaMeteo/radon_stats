@@ -92,9 +92,14 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # Noms des colonnes du df
 DATE = "date"
-VALOBS = "Observed gamma dose rate (nSv/h)"
-VALSIMU = "Simulated gamma dose rate (nSv/h)"
+
+# VALOBS = "Observed gamma dose rate (nSv/h)"
+# VALSIMU = "Simulated gamma dose rate (nSv/h)"
+# VALPRECIP_23 = "Precipitations (mm/h)"
+# VALPRECIP_24 = "rain_val"
+
 NOBS = 721
+
 COORD_X = "latitude"
 COORD_Y = "longitude"
 EAU = "sea_coverage"
@@ -102,6 +107,7 @@ ALT = "altitude"
 
 # Seuil des pics
 PIC = 10
+RAIN_MIN = 0.1
 TOL_OBS = 3
 TOL_SIMU = 2
 

@@ -16,7 +16,7 @@ from scipy.stats import kstest
 
 from ..constantes import *
 from ..eval.scores import llog_pdf, llog, aic, bic, stats_scores_fittings
-from ..documents.docs import docs_dict_params
+# from ..documents.docs import docs_dict_params
 
 # Là on va garder nos résultats .csv
 dossier = Path(__file__).parent.parent
@@ -133,6 +133,8 @@ class FittingSimple:
             "manuel": self.fitted_params_simple_manuel
         }
 
+#-------------- Fitting double (deux distributions) --------------
+##################################################################
 
 #-------------- Fitting double (deux distributions) --------------
 ##################################################################
@@ -388,6 +390,8 @@ def fitting_simple_et_double(yB:np.ndarray, dossier_json) -> dict:
         dict: un dictionnaire contenant les paramètres ajustés pour les 
         différents types de fitting.
     """
+    yB = yB[yB > 1e-3]
+
     # Fitting simple
     resultats_fitting = {}
 
@@ -424,7 +428,7 @@ def fitting_simple_et_double(yB:np.ndarray, dossier_json) -> dict:
         # Enregistrement du dictionnaire
 
         ad_dict_params = dossier_json / "dict_params_dist_et_quant" 
-        docs_dict_params(params, ad_dict_params) #! fonction pas encore écrite
+        # docs_dict_params(params, ad_dict_params) #! fonction pas encore écrite
         
         # Évaluation des distributions
 

@@ -32,44 +32,50 @@ def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict) -> dict:
         ref_list = info_maille['ref_stat_mesure']  # Liste de références (ref)
         gamma_obs = []
         gamma_simu = []
+        gamma_rain = []
         liste_yB_all = []
 
         # Itérer sur chaque référence et combiner les données
         for ref in ref_list:
-            simu, obs = dict_vals[ref]
+            simu = dict_vals[ref]["simu"]
+            obs = dict_vals[ref]["obs"]
+            rain = dict_vals[ref]["rain"]
+
             # Chaque colonne de gamma_obs/gamma_simu correspond à une station, 
             # chaque ligne correspond à un instant de temps
             gamma_obs.append(obs)
             gamma_simu.append(simu)
+            gamma_rain.append(rain)
 
         gamma_obs = np.array(gamma_obs).T
         gamma_simu = np.array(gamma_simu).T
-        # print("gamma_obs, shape:", gamma_obs, np.array(gamma_obs).shape)
-        # print("gamma_simu, shape:", gamma_simu, np.array(gamma_simu).shape)
+        gamma_rain = np.array(gamma_rain).T
 
         # Sélection d'informations sur les pics  
         for i in range(len(gamma_obs[:, 0])):
             ligne_obs_i = gamma_obs[i, :]
             ligne_simu_i = gamma_simu[i, :]
+            ligne_rain_i = gamma_rain[i, :]
 
             # Deux conditions:
             # Pic en obs
-            # Pic en simu avec un minimum en obs 
             masc1 = any(val >= PIC for val in ligne_obs_i) and all(not np.isnan(val) for val in ligne_obs_i)
-            masc2 = any(val >= PIC + TOL_SIMU for val in ligne_simu_i)
+            # Précipitation non nulle
+            masc2 = all((val >= RAIN_MIN) or np.isnan(val) for val in ligne_rain_i)
 
+            # Pic en simu avec un minimum en obs 
+            # masc2 = any(val >= PIC + TOL_SIMU for val in ligne_simu_i)
             # Vérification que obs est assez grand
-            if masc2 == True:
-                for j in range(gamma_obs.shape[1]):
-                    if (gamma_obs[i, j] <= PIC - TOL_OBS) or np.isnan(gamma_obs[i, j]):
-                        masc2 = False
+            # if masc2 == True:
+            #     for j in range(gamma_obs.shape[1]):
+            #         if (gamma_obs[i, j] <= PIC - TOL_OBS) or np.isnan(gamma_obs[i, j]):
+            #             masc2 = False
 
             # On prend en compte si une des conditions est vérifiée
-            if (masc1 == True) or (masc2 == True):
+            if (masc1 == True & masc2 == True):
                 liste_yB_all.append(ligne_obs_i)
 
         liste_yB_all = np.array(liste_yB_all)
-        # print("liste_yB_all, shape:", liste_yB_all, liste_yB_all.shape)
 
         # Supposons que toutes les stations ont le même nombre de valeurs
         for n in range(liste_yB_all.shape[0]):
@@ -116,7 +122,8 @@ def dict_yA_yB_sans_filtre(dict_maille, dict_vals):
 
         # Itérer sur chaque référence et combiner les données
         for ref in ref_list:
-            simu, obs = dict_vals[ref]
+            obs = dict_vals[ref]["obs"]
+
             # Chaque colonne de gamma_obs correspond à une station, 
             # chaque ligne correspond à un instant de temps
             gamma_obs.append(obs)

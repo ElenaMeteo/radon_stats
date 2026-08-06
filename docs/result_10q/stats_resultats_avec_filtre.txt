@@ -4,24 +4,24 @@ STATISTIQUES DES FITTINGS
 ========== SIMPLE_AUTO ==========
 
 Victoires AIC
-    norm         : 1
-    gamma        : 1
-    log-norm     : 8
+    norm         : 0
+    gamma        : 0
+    log-norm     : 10
 
 Victoires BIC
-    norm         : 1
-    gamma        : 1
-    log-norm     : 8
+    norm         : 0
+    gamma        : 0
+    log-norm     : 10
 
 Différence moyenne (%) AIC
-    norm         : 19.605
-    gamma        : 68.814
-    log-norm     : 5.660
+    norm         : 20.509
+    gamma        : 15.413
+    log-norm     : 0.000
 
 Différence moyenne (%) BIC
-    norm         : 19.591
-    gamma        : 68.797
-    log-norm     : 5.658
+    norm         : 20.492
+    gamma        : 15.419
+    log-norm     : 0.000
 
 ------------------------------------------------------------
 
@@ -38,13 +38,13 @@ Victoires BIC
     log-norm     : 10
 
 Différence moyenne (%) AIC
-    norm         : 35.769
-    gamma        : 0.585
+    norm         : 36.377
+    gamma        : 0.626
     log-norm     : 0.000
 
 Différence moyenne (%) BIC
-    norm         : 35.730
-    gamma        : 0.584
+    norm         : 36.330
+    gamma        : 0.626
     log-norm     : 0.000
 
 ------------------------------------------------------------
@@ -62,14 +62,14 @@ Victoires BIC
     log-norm     : 5
 
 Différence moyenne (%) AIC
-    norm         : 34.264
-    gamma        : 0.123
-    log-norm     : 0.245
+    norm         : 35.129
+    gamma        : 0.012
+    log-norm     : 0.452
 
 Différence moyenne (%) BIC
-    norm         : 34.195
-    gamma        : 0.123
-    log-norm     : 0.245
+    norm         : 35.045
+    gamma        : 0.012
+    log-norm     : 0.451
 
 ------------------------------------------------------------
 

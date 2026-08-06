@@ -116,10 +116,12 @@ def combiner_n_dicts(*dicts):
     for d in dicts:
         for ref, vals in d.items():
             if ref in dict_all:
-                dict_all[ref][0] = np.concatenate([dict_all[ref][0], vals[0]])
-                dict_all[ref][1] = np.concatenate([dict_all[ref][1], vals[1]])
+                dict_all[ref] = {
+                    cle: np.concatenate([dict_all[ref][cle], vals[cle]])
+                    for cle in vals
+                }
             else:
-                dict_all[ref] = [vals[0], vals[1]]
+                dict_all[ref] = {cle: v.copy() for cle, v in vals.items()}
 
     return dict_all
 

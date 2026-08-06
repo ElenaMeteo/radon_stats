@@ -75,6 +75,87 @@ def plot_regression(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
         "stderr": reg.stderr,
     }
 
+def plot_regression_poly2(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
+    """
+    Regression polynomiale de dégré 2 (pour l'écart-type)
+
+    Args:
+        x (array-like): variable indépendante
+        y (array-like): variable dépendante
+        xlabel (str): nom de l'axe x
+        ylabel (str): nom de l'axe y
+        titre (str): titre du graphique
+
+    Returns:
+        dict avec les paramètres de la regression
+    """
+
+    x = np.asarray(x)
+    y = np.asarray(y)
+
+    # Elimina posibles NaN
+    mask = np.isfinite(x) & np.isfinite(y)
+    x = x[mask]
+    y = y[mask]
+
+    # Ajuste polinomial de grado 2
+    coeffs = np.polyfit(x, y, deg=2)
+    a, b, c = coeffs
+
+    poly = np.poly1d(coeffs)
+
+    # Predicción sobre los puntos originales
+    y_pred = poly(x)
+
+    # Cálculo de R²
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - np.mean(y)) ** 2)
+    r2 = 1 - ss_res / ss_tot
+
+    # Curva ajustada
+    x_fit = np.linspace(x.min(), x.max(), 300)
+    y_fit = poly(x_fit)
+
+    # Gráfico
+    plt.figure(figsize=(6, 5))
+    plt.scatter(x, y, label="Données")
+    plt.plot(
+        x_fit,
+        y_fit,
+        "r",
+        label=(
+            f"y = {a:.4e}x² "
+            f"{b:+.4e}x "
+            f"{c:+.4e}\n"
+            f"$R^2$ = {r2:.4f}"
+        ),
+    )
+
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(titre)
+    plt.grid(True)
+    plt.legend()
+
+    plt.savefig(
+        f"{ad_graph}/regression_{nom_doc}.png",
+        dpi=150,
+        bbox_inches="tight"
+    )
+
+    print(f"Equation : y = {a:.6e} x² + {b:.6e} x + {c:.6e}")
+    print(f"R² = {r2:.6f}")
+
+    return {
+        "degree": 2,
+        "coefficients": coeffs,   # [a, b, c]
+        "a": a,
+        "b": b,
+        "c": c,
+        "r2": r2,
+        "poly": poly,             # función evaluable
+    }
+
 
 def extract_mean_std(resultats_all_q, methode, nom_dist):
     """
@@ -189,7 +270,7 @@ def regression_params(resultats_all_q, yA_abscisses):
     mu_simple, sigma_simple, _ = extract_mean_std(resultats_all_q, "simple_manuel", "log-norm")
 
     # Localisation selon circonstances
-    AD_MOY, AD_ECT = loc_graphs_regression()
+    ad_moy, ad_ect = loc_graphs_regression()
 
     plot_regression(
         yA_abscisses, 
@@ -197,17 +278,19 @@ def regression_params(resultats_all_q, yA_abscisses):
         xlabel, 
         ylabel_mu, 
         titre_mu_simple, 
-        AD_MOY, 
-        nom_doc="mu_simple_eau_alt")
-    
-    plot_regression(
-        yA_abscisses, 
-        sigma_simple, 
-        xlabel, 
-        ylabel_sigma, 
-        titre_mu_simple,
-        AD_ECT,
-        nom_doc="sigma_simple_id_eau_alt")
+        ad_moy, 
+        nom_doc="mu_simple_eau_alt"
+    )
+
+    plot_regression_poly2(
+        yA_abscisses,
+        sigma_simple,
+        xlabel,
+        ylabel_sigma,
+        titre_sigma_simple,
+        ad_ect,
+        nom_doc="sigma_simple_id_eau_alt"
+    )
 
     # Distribution gamma pour fitting double
     # mu_double, sigma_double, weights = extract_mean_std(resultats_all_q, "double", "gamma")

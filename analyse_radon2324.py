@@ -25,6 +25,7 @@ from librairies.eval.mu_sigma import regression_params
 from librairies.maillage_et_stations.stations_zone import eligibilite_stations
 
 from librairies.documents.org_lecture_calcul import lecture_ou_calcul
+from librairies.documents.ad_dependantes import loc_json_structure_bd, loc_graphs_fitting
 
 
 def main():
@@ -33,25 +34,28 @@ def main():
     # Données initales
     ##################
 
+    ad_structure_bd = loc_json_structure_bd() # Localisation des données de structure
+
     # Adresses des données
-    adresse = STRUCTURE_BD / "dict_adresses_all_bd.json"
+    
+    adresse = ad_structure_bd / "dict_adresses_all_bd.json"
     dict_adresses = lecture_ou_calcul(adresse, structure_donnees, "dict_adresses_all_bd.json", force=True)
     print("Dictionnaire d'adresses chargé avec succès.")
 
     # Coordonnées des stations
-    adresse = STRUCTURE_BD / "dict_coords_all_bd.json"
+    adresse = ad_structure_bd / "dict_coords_all_bd.json"
     dict_coords = lecture_ou_calcul(adresse, structure_donnees, "dict_coords_all_bd.json", force=True)
     print("Dictionnaire de coordonnées chargé avec succès.")
 
     # Valeurs (simu/obs) des stations
-    adresse = STRUCTURE_BD / "dict_vals_all_bd.json"
+    adresse = ad_structure_bd / "dict_vals_all_bd.json"
     dict_vals = lecture_ou_calcul(adresse, structure_donnees, "dict_vals_all_bd.json",  force=True)
     print("Dictionnaire de valeurs chargé avec succès.")
 
     # Stations éligibles (eau et altitude)
-    adresse = STRUCTURE_BD / "dict_eligible_stations.json"
-    dict_stations_eligibles = lecture_ou_calcul(adresse, eligibilite_stations, "dict_eligible_stations.json", force=True)
-    print("Dictionnaire de stations éligibles chargé avec succès.")
+    # adresse = STRUCTURE_BD / "dict_eligible_stations.json"
+    # dict_stations_eligibles = lecture_ou_calcul(adresse, eligibilite_stations, "dict_eligible_stations.json", force=False)
+    # print("Dictionnaire de stations éligibles chargé avec succès.")
 
     # Maille
     adresse = MAILLES / f"maille_{DELTA}km.json"
@@ -80,7 +84,7 @@ def main():
                                   force=True)
     print("Dictionnaire yAyB non filtré chargé avec succès.")
 
-    if (FILTRE == True):
+    if (FILTRE_PIC_RADON == True):
         dict_yAyB = dict_yAyB_filtre
     else:
         dict_yAyB = dict_yAyB_sans_filtre
@@ -100,10 +104,10 @@ def main():
     
     # Fitting et plots des distributions
     resultats_all_q, yA_abs = fit_et_plot_par_quantile(dict_by_quantiles)
-    print("resultats_all_q:", resultats_all_q)
-    print("yA_abs:", yA_abs)
+
     # Statistiques des résultats
-    stats_scores_fittings(resultats_all_q, ruta_txt=Path(RESUT_10Q)/"stats_resultats_avec_filtre.txt")
+    _, ad_txt = loc_graphs_fitting()
+    stats_scores_fittings(resultats_all_q, Path(ad_txt)/"stats_resultats.txt")
 
     # Régressions linéaires des paramètres par quantile
     regression_params(resultats_all_q, yA_abs)
