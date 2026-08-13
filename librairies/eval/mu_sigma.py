@@ -7,7 +7,9 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 
 from ..constantes import *
-from ..documents.ad_dependantes import loc_graphs_regression
+from ..documents.ad_dependantes import loc_graphs_regression, loc_res_mu_sigma 
+from ..documents.docs import docs_dict_to_json_generique
+
 
 def plot_regression(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
     """
@@ -48,10 +50,7 @@ def plot_regression(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
     plt.figure(figsize=(6, 5))
     plt.scatter(x, y, label="Données")
     plt.plot(
-        x_fit,
-        y_fit,
-        "r",
-        label=f"y = {pente:.4f}x + {intercept:.4f}\n$R^2$ = {r2:.4f}"
+        x_fit, y_fit, "r", label=f"y = {pente:.4f}x + {intercept:.4f}\n$R^2$ = {r2:.4f}"
     )
 
     plt.xlabel(xlabel)
@@ -59,21 +58,24 @@ def plot_regression(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
     plt.title(titre)
     plt.grid(True)
     plt.legend()
-    plt.savefig(f'{ad_graph}/regression_{nom_doc}.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f"{ad_graph}/regression_{nom_doc}.png", dpi=150, bbox_inches="tight")
 
     print(f"Equation : y = {pente:.6f} x + {intercept:.6f}")
     print(f"R² = {r2:.6f}")
     print(f"r = {r:.6f}")
     print(f"p-value = {reg.pvalue:.3e}")
 
-    return {
-        "slope": pente,
-        "intercept": intercept,
+    dict_params = {
+        "a": pente,
+        "b": intercept,
         "r2": r2,
-        "r": r,
-        "pvalue": reg.pvalue,
-        "stderr": reg.stderr,
+        # "r": r,
+        #"pvalue": reg.pvalue,
+        #"stderr": reg.stderr,
     }
+
+    return dict_params
+
 
 def plot_regression_poly2(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
     """
@@ -123,12 +125,7 @@ def plot_regression_poly2(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
         x_fit,
         y_fit,
         "r",
-        label=(
-            f"y = {a:.4e}x² "
-            f"{b:+.4e}x "
-            f"{c:+.4e}\n"
-            f"$R^2$ = {r2:.4f}"
-        ),
+        label=(f"y = {a:.4e}x² " f"{b:+.4e}x " f"{c:+.4e}\n" f"$R^2$ = {r2:.4f}"),
     )
 
     plt.xlabel(xlabel)
@@ -137,24 +134,21 @@ def plot_regression_poly2(x, y, xlabel, ylabel, titre, ad_graph, nom_doc):
     plt.grid(True)
     plt.legend()
 
-    plt.savefig(
-        f"{ad_graph}/regression_{nom_doc}.png",
-        dpi=150,
-        bbox_inches="tight"
-    )
+    plt.savefig(f"{ad_graph}/regression_{nom_doc}.png", dpi=150, bbox_inches="tight")
 
     print(f"Equation : y = {a:.6e} x² + {b:.6e} x + {c:.6e}")
     print(f"R² = {r2:.6f}")
 
-    return {
-        "degree": 2,
-        "coefficients": coeffs,   # [a, b, c]
+    dict_params = {
         "a": a,
         "b": b,
         "c": c,
-        "r2": r2,
-        "poly": poly,             # función evaluable
+        # "degree": 2,
+        # "coefficients": coeffs,  # [a, b, c]
+        "r2": r2
     }
+
+    return dict_params
 
 
 def extract_mean_std(resultats_all_q, methode, nom_dist):
@@ -214,15 +208,19 @@ def extract_mean_std(resultats_all_q, methode, nom_dist):
             locs = params["locs"]
             scales = params["scales"]
 
-            moy_comp = np.array([
-                dist.mean(*shapes[i], loc=locs[i], scale=scales[i])
-                for i in range(len(weights))
-            ])
+            moy_comp = np.array(
+                [
+                    dist.mean(*shapes[i], loc=locs[i], scale=scales[i])
+                    for i in range(len(weights))
+                ]
+            )
 
-            ect_comp = np.array([
-                np.sqrt(dist.var(*shapes[i], loc=locs[i], scale=scales[i]))
-                for i in range(len(weights))
-            ])
+            ect_comp = np.array(
+                [
+                    np.sqrt(dist.var(*shapes[i], loc=locs[i], scale=scales[i]))
+                    for i in range(len(weights))
+                ]
+            )
 
             # NOTE: antes se calculaba una media/varianza "combinada" de la
             # mezcla (np.sum(weights * ...)), lo que daba un escalar. Pero
@@ -240,6 +238,7 @@ def extract_mean_std(resultats_all_q, methode, nom_dist):
 
     return mu, sigma, weights_list
 
+
 def regression_params(resultats_all_q, yA_abscisses):
     """Cette fonction trace la regression des paramètres
     concernés par la distribution et ses résultats"""
@@ -247,7 +246,6 @@ def regression_params(resultats_all_q, yA_abscisses):
     yA_abscisses = np.array(yA_abscisses)
     yA_sqrt = np.sqrt(yA_abscisses)
     yA_log = np.log(yA_abscisses)
-
 
     # Titre régressions
     xlabel = "yA moyen des quantiles"
@@ -257,40 +255,61 @@ def regression_params(resultats_all_q, yA_abscisses):
     ylabel_weights = "Poids de la double distribution optimisés"
 
     titre_mu_simple = "Régression linéaire des moyennes par quantile\nMéthode simple"
-    titre_sigma_simple = "Régression linéaire des écart-types par quantile\nMéthode simple"
+    titre_sigma_simple = (
+        "Régression linéaire des écart-types par quantile\nMéthode simple"
+    )
 
-    titre_mu1_double = "Régression linéaire des moyennes par quantile\nMéthode double - 1ère partie"
-    titre_mu2_double = "Régression linéaire des moyennes par quantile\nMéthode double - 2ème partie"
+    titre_mu1_double = (
+        "Régression linéaire des moyennes par quantile\nMéthode double - 1ère partie"
+    )
+    titre_mu2_double = (
+        "Régression linéaire des moyennes par quantile\nMéthode double - 2ème partie"
+    )
 
-    titre_sigma1_double = "Régression linéaire des écart-types par quantile\nMéthode double - 1ère partie"
-    titre_sigma2_double = "Régression linéaire des écart-types par quantile\nMéthode double - 2ème partie"
+    titre_sigma1_double = (
+        "Régression linéaire des écart-types par quantile\nMéthode double - 1ère partie"
+    )
+    titre_sigma2_double = (
+        "Régression linéaire des écart-types par quantile\nMéthode double - 2ème partie"
+    )
     titre_weights = "Régression linéaire des poids de la méthode double"
 
     # Distribution log-norm pour fitting simple
-    mu_simple, sigma_simple, _ = extract_mean_std(resultats_all_q, "simple_manuel", "log-norm")
+    mu_simple, sigma_simple, _ = extract_mean_std(
+        resultats_all_q, "simple_manuel", "log-norm"
+    )
 
     # Localisation selon circonstances
     ad_moy, ad_ect = loc_graphs_regression()
 
-    plot_regression(
-        yA_abscisses, 
-        mu_simple, 
-        xlabel, 
-        ylabel_mu, 
-        titre_mu_simple, 
-        ad_moy, 
-        nom_doc="mu_simple_eau_alt"
+    dict_params = {}
+
+    dict_moy = plot_regression(
+        yA_abscisses,
+        mu_simple,
+        xlabel,
+        ylabel_mu,
+        titre_mu_simple,
+        ad_moy,
+        nom_doc="mu_simple_eau_alt",
     )
 
-    plot_regression_poly2(
+    dict_ect = plot_regression_poly2(
         yA_abscisses,
         sigma_simple,
         xlabel,
         ylabel_sigma,
         titre_sigma_simple,
         ad_ect,
-        nom_doc="sigma_simple_id_eau_alt"
+        nom_doc="sigma_simple_id_eau_alt",
     )
+
+    dict_params["mu"] = dict_moy
+    dict_params["sigma"] = dict_ect
+
+    ad_dict_params = loc_res_mu_sigma()
+    ad_dict_params = ad_dict_params / f"mu_sigma_delta{DELTA}km_{N_QUANTILES}q.json"
+    docs_dict_to_json_generique(dict_params, ad_dict_params)
 
     # Distribution gamma pour fitting double
     # mu_double, sigma_double, weights = extract_mean_std(resultats_all_q, "double", "gamma")

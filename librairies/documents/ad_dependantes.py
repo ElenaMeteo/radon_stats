@@ -4,6 +4,7 @@ des paramètres établis """
 
 from ..constantes import *
 
+
 def loc_bd():
     """ Cette fonction va attribuer la bonne adresse
     à chaque base de données en fonction des
@@ -35,18 +36,18 @@ def loc_graphs_regression ():
 
     if N_QUANTILES==10:
         if FILTRE_PIC_RADON==True:
-            ad_moy = REG_10Q_FILTRE_MOY
-            ad_ect = REG_10Q_FILTRE_ECT
+            ad_moy = REG_FILTRE / "mu"
+            ad_ect = REG_FILTRE / "sigma"
         else:
-            ad_moy = REG_10Q_NFILTRE_MOY
-            ad_ect = REG_10Q_NFILTRE_ECT
+            ad_moy = REG_NFILTRE / "mu"
+            ad_ect = REG_NFILTRE / "sigma"
     if N_QUANTILES==20:
         if FILTRE_PIC_RADON==True:
-            ad_moy = REG_20Q_FILTRE_MOY
-            ad_ect = REG_20Q_FILTRE_ECT
+            ad_moy = REG_FILTRE / "mu"
+            ad_ect = REG_FILTRE / "sigma"
         else:
-            ad_moy = REG_20Q_NFILTRE_MOY
-            ad_ect = REG_20Q_NFILTRE_ECT
+            ad_moy = REG_NFILTRE / "mu"
+            ad_ect = REG_NFILTRE / "sigma"
 
     else:
         print("Erreur loc_graphs_regression: le nombre de quantiles n'est pas encore défini")
@@ -60,43 +61,40 @@ def loc_graphs_fitting ():
 
     if FILTRE_EAU_ALT==True:
 
-        if N_QUANTILES==10:
-            if FILTRE_PIC_RADON==True:
-                ad_dist = GRAPH_10Q_NEVAL_FILTRE_EA
-                ad_eval = GRAPH_10Q_3EVAL_FILTRE_EA
-            else:
-                ad_dist = GRAPH_10Q_NEVAL_NFILTRE_EA
-                ad_eval = GRAPH_10Q_3EVAL_NFILTRE_EA
-
-        if N_QUANTILES==20:
-            if FILTRE_PIC_RADON==True:
-                ad_dist = GRAPH_20Q_NEVAL_FILTRE_EA
-                ad_eval = GRAPH_20Q_3EVAL_FILTRE_EA
-            else:
-                ad_dist = GRAPH_20Q_NEVAL_NFILTRE_EA
-                ad_eval = GRAPH_20Q_3EVAL_NFILTRE_EA
-
+        if FILTRE_PIC_RADON==True:
+            ad_dist = GRAPH_NEVAL_FILTRE_EA
+            ad_eval = GRAPH_3EVAL_FILTRE_EA
         else:
-            print("Erreur loc_graphs_fitting: le nombre de quantiles n'est pas encore défini")
+            ad_dist = GRAPH_NEVAL_NFILTRE_EA
+            ad_eval = GRAPH_3EVAL_NFILTRE_EA
+
     else:
 
-        if N_QUANTILES==10:
-            if FILTRE_PIC_RADON==True:
-                ad_dist = GRAPH_10Q_NEVAL_FILTRE
-                ad_eval = GRAPH_10Q_3EVAL_FILTRE
-            else:
-                ad_dist = GRAPH_10Q_NEVAL_NFILTRE
-                ad_eval = GRAPH_10Q_3EVAL_NFILTRE
-
-        if N_QUANTILES==20:
-            if FILTRE_PIC_RADON==True:
-                ad_dist = GRAPH_20Q_NEVAL_FILTRE
-                ad_eval = GRAPH_20Q_3EVAL_FILTRE
-            else:
-                ad_dist = GRAPH_20Q_NEVAL_NFILTRE
-                ad_eval = GRAPH_20Q_3EVAL_NFILTRE
-
+        if FILTRE_PIC_RADON==True:
+            ad_dist = GRAPH_NEVAL_FILTRE
+            ad_eval = GRAPH_3EVAL_FILTRE
         else:
-            print("Erreur loc_graphs_fitting: le nombre de quantiles n'est pas encore défini")
+            ad_dist = GRAPH_NEVAL_NFILTRE
+            ad_eval = GRAPH_3EVAL_NFILTRE
 
     return ad_dist, ad_eval
+
+def loc_res_mu_sigma ():
+
+    if FILTRE_PIC_RADON == True:
+        ad_resultats = JSON / "mu_sigma" / "avec_filtre"
+
+    else:
+        ad_resultats = JSON / "mu_sigma" / "sans_filtre"
+    return ad_resultats
+
+
+def loc_graph_reg_alpha_beta():
+
+    if FILTRE_PIC_RADON == True:
+        ad_reg = REG_ALPHA_BETA / "avec_filtre"
+
+    else: 
+        ad_reg = REG_ALPHA_BETA / "sans_filtre"
+
+    return ad_reg

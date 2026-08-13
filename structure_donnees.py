@@ -13,9 +13,6 @@ from librairies.documents.ad_dependantes import loc_bd, loc_json_structure_bd
 
 from librairies.exe_analyse.gamma_data import dict_simu_vs_obs, combiner_n_dicts
 
-dossier = Path(__file__).parent
-dossier_json = dossier / "json"
-
 class Structure:
     def __init__(self, ad_data):
         self.ad_data = ad_data

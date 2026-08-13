@@ -6,7 +6,7 @@ from ..constantes import *
 
 from ..documents.docs import docs_dict_to_json_generique
 
-def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict) -> dict:
+def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict, ad_filtre:str) -> dict:
     """ À partir du dictionnaire contenant les informations sur les
     zones du maillage contenant 5 stations de mesure ou plus, cette 
     fonction génère un dictionnaire qui regroupe les valeurs yA avec 
@@ -88,12 +88,12 @@ def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict) -> dict:
                 # On garde chaque instant de chaque maille
                 dict_yAyB[f'{maille_min5}_{n}'] = {'yA': yA, 'yB': yB}
 
-    docs_dict_to_json_generique(dict_yAyB, YAYB / "dict_yAyB_filtre.json")
+    docs_dict_to_json_generique(dict_yAyB, ad_filtre)
 
     return dict_yAyB
 
 
-def dict_yA_yB_sans_filtre(dict_maille, dict_vals):
+def dict_yA_yB_sans_filtre(dict_maille: dict, dict_vals: dict, ad_sans_filtre:str):
     """ À partir du dictionnaire contenant les informations sur les
     zones du maillage contenant 5 stations de mesure ou plus, cette 
     fonction génère un dictionnaire qui regroupe les valeurs yA avec 
@@ -141,11 +141,11 @@ def dict_yA_yB_sans_filtre(dict_maille, dict_vals):
                 # On garde chaque instant de chaque maille
                 dict_yAyB[f'{maille_min5}_{n}'] = {'yA': yA, 'yB': yB}
 
-    docs_dict_to_json_generique(dict_yAyB, YAYB / "dict_yAyB_sans_filtre.json")
+    docs_dict_to_json_generique(dict_yAyB, ad_sans_filtre)
 
     return dict_yAyB
 
-def dict_yAyB_by_quantiles(dict_yAyB):
+def dict_yAyB_by_quantiles(dict_yAyB: dict, ad_by_quant: str):
     """Sépare le dictionnaire dict_yAyB par quantiles de yA et 
     regroupe les yB correspondants pour chaque quantile.
     
@@ -212,6 +212,6 @@ def dict_yAyB_by_quantiles(dict_yAyB):
             'count': len(keys_list)
         }
 
-    docs_dict_to_json_generique(quantiles_dict, YAYB / "dict_yAyB_by_quantiles.json")
+    docs_dict_to_json_generique(quantiles_dict, ad_by_quant)
     
     return quantiles_dict
