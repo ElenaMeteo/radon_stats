@@ -1,0 +1,18 @@
+{
+    "2023": {
+        "path": "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all23/adresses_mac_eau_alt.json",
+        "colonnes": {
+            "obs": "Observed gamma dose rate (nSv/h)",
+            "simu": "Simulated gamma dose rate (nSv/h)",
+            "rain": "Precipitations (mm/h)"
+        }
+    },
+    "2024": {
+        "path": "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/ad_all24/adresses_mac_eau_alt.json",
+        "colonnes": {
+            "obs": "Observed gamma dose rate (nSv/h)",
+            "simu": "Simulated gamma dose rate (nSv/h)",
+            "rain": "rain_val"
+        }
+    }
+}

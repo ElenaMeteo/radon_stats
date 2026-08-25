@@ -6,3 +6,5 @@ venv
 !adresses_mac_eau_alt.json
 !adresses_mac_facil.json
 !adresses_mac.json
+!dict_all_bd.json
+!dict_eau_alt_bd.json
