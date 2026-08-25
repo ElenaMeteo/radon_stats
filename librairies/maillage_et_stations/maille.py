@@ -103,6 +103,7 @@ def dict_min5(maille:np.ndarray, dict_coords:dict):
     m = len(maille[0])
     cont_mailles = 0
     dict_maille = {}
+    dict_stats_maille = {}
 
     for i in range(1, n):
         for j in range(1, m):
@@ -120,9 +121,10 @@ def dict_min5(maille:np.ndarray, dict_coords:dict):
                     'stat_mesure': stat_dans_zone,
                     'ref_stat_mesure': ref_stat_zone  # ahora son referencias (ref), no adresses
                 }
+                dict_stats_maille[f'maille_{i}_{j}'] = ref_stat_zone
 
     print(f"Nombre de mailles avec au moins {MIN_STAT} stations: {cont_mailles}")
-    return dict_maille
+    return dict_maille, dict_stats_maille
 
 
 def MSE(yA, yB):

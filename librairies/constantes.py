@@ -11,12 +11,16 @@ from pathlib import Path
 ######################
 
 FILTRE_EAU_ALT = True # True si on veut filtrer les données par eau et altitude, False sinon
-DELTA = 90 # Delta du maillage en km
+DELTA = 25 # Delta du maillage en km
 N_QUANTILES = 10 # Nombre de quantiles pour la séparation des données
-FILTRE_PIC_RADON = True # True si on veut filtrer les données par pics, False sinon
+FILTRE_PIC_RADON = False # True si on veut filtrer les données par pics, False sinon
 
 # DELTA_LIST = [30, 40, 50, 60, 70, 80, 90]
-DELTA_LIST = [35, 45, 55, 65, 75, 85, 95]
+DELTA_LIST = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]
+# DELTA_LIST = [35, 45, 55, 65, 75, 85]
+
+# Nom docs
+FILTRE_MARQUE = "filtre" if FILTRE_PIC_RADON else "sans_filtre"
 
 # JSON
 ######

@@ -74,7 +74,7 @@ def main():
     dict_yAyB_filtre = lecture_ou_calcul(adresse, 
                                   lambda: dict_yA_yB_filtre(dict_maille, dict_vals, adresse), 
                                   "dict_yAyB_filtre.json",
-                                  force=False)
+                                  force=True)
     print("Dictionnaire yAyB filtré chargé avec succès.")
     
     # yA et yB non filtrés
@@ -83,7 +83,7 @@ def main():
     dict_yAyB_sans_filtre = lecture_ou_calcul(adresse, 
                                   lambda: dict_yA_yB_sans_filtre(dict_maille, dict_vals, adresse), 
                                   "dict_yAyB_sans_filtre.json",
-                                  force=False)
+                                  force=True)
     print("Dictionnaire yAyB non filtré chargé avec succès.")
 
     if (FILTRE_PIC_RADON == True):
@@ -93,11 +93,11 @@ def main():
 
     # Separation par quantiles de yA
     adresse = JSON / "yAyB"
-    adresse = adresse / f"dict_yAyB_by_quantiles_delta{DELTA}km_{N_QUANTILES}q.json"
+    adresse = adresse / f"dict_yAyB_by_quantiles_delta{DELTA}km_{N_QUANTILES}q_{FILTRE_MARQUE}.json"
     dict_by_quantiles = lecture_ou_calcul(adresse, 
                                           lambda: dict_yAyB_by_quantiles(dict_yAyB, adresse), 
                                           "dict_yAyB_by_quantiles.json",
-                                          force=False)
+                                          force=True)
     print("Dictionnaire yAyB par quantiles chargé avec succès.")
     print("Número de quantiles:", len(dict_by_quantiles))
     # Analyse des yA

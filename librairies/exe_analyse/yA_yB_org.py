@@ -72,7 +72,7 @@ def dict_yA_yB_filtre(dict_maille:dict, dict_vals:dict, ad_filtre:str) -> dict:
             #             masc2 = False
 
             # On prend en compte si une des conditions est vérifiée
-            if (masc1 == True & masc2 == True):
+            if (masc1 == True):
                 liste_yB_all.append(ligne_obs_i)
 
         liste_yB_all = np.array(liste_yB_all)

@@ -36,23 +36,20 @@ def loc_graphs_regression ():
 
     if N_QUANTILES==10:
         if FILTRE_PIC_RADON==True:
-            ad_moy = REG_FILTRE / "mu"
-            ad_ect = REG_FILTRE / "sigma"
+            ad_moy_ect = REG_FILTRE 
         else:
-            ad_moy = REG_NFILTRE / "mu"
-            ad_ect = REG_NFILTRE / "sigma"
+            ad_moy_ect = REG_NFILTRE 
+
     if N_QUANTILES==20:
         if FILTRE_PIC_RADON==True:
-            ad_moy = REG_FILTRE / "mu"
-            ad_ect = REG_FILTRE / "sigma"
+            ad_moy_ect = REG_FILTRE 
         else:
-            ad_moy = REG_NFILTRE / "mu"
-            ad_ect = REG_NFILTRE / "sigma"
+            ad_moy_ect = REG_NFILTRE 
 
     else:
         print("Erreur loc_graphs_regression: le nombre de quantiles n'est pas encore défini")
 
-    return ad_moy, ad_ect
+    return ad_moy_ect
 
 def loc_graphs_fitting ():
     """ Cette fonction va attribuer la bonne adresse

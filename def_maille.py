@@ -8,11 +8,13 @@ def def_maille(dict_coords):
 
     """ Cette fonction permet de créer la maille sur la france """
     ad_maille = Path(MAILLES / f"maille_{DELTA}km.json")
+    ad_stats_maille = Path(MAILLES / f"stats_maille_{DELTA}km.json")
 
     # Création de la maille
     maille = maille_exe(dict_coords)
 
     # Filtrations des mailles contenant assez de stations
-    dict_maille = dict_min5(maille, dict_coords)
+    dict_maille, dict_stats_maille = dict_min5(maille, dict_coords)
     docs_dict_to_json_generique(dict_maille, ad_maille)
+    docs_dict_to_json_generique(dict_stats_maille, ad_stats_maille)
 

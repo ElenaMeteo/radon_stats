@@ -280,7 +280,7 @@ def regression_params(resultats_all_q, yA_abscisses):
     )
 
     # Localisation selon circonstances
-    ad_moy, ad_ect = loc_graphs_regression()
+    ad_moy_ect = loc_graphs_regression()
 
     dict_params = {}
 
@@ -290,7 +290,7 @@ def regression_params(resultats_all_q, yA_abscisses):
         xlabel,
         ylabel_mu,
         titre_mu_simple,
-        ad_moy,
+        ad_moy_ect,
         nom_doc="mu_simple_eau_alt",
     )
 
@@ -300,7 +300,7 @@ def regression_params(resultats_all_q, yA_abscisses):
         xlabel,
         ylabel_sigma,
         titre_sigma_simple,
-        ad_ect,
+        ad_moy_ect,
         nom_doc="sigma_simple_id_eau_alt",
     )
 
