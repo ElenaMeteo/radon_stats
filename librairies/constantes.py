@@ -25,52 +25,94 @@ FILTRE_MARQUE = "filtre" if FILTRE_PIC_RADON else "sans_filtre"
 # JSON
 ######
 
-DATA_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_all_bd.json"
-DATA_EAU_ALT = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_eau_alt_bd.json"
+# MAC
+#####
+
+# DATA_ALL_BD = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_all_bd.json"
+# DATA_EAU_ALT = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_eau_alt_bd.json"
+
+# # Adresses aux produits 
+
+# MAILLES = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/mailles")
+# STRUCTURE_BD = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd")
+# YAYB = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/yAyB")
+# JSON = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json")  
+
+# # Adresses graphiques
+# # Toutes stations de mesure
+# GRAPH_3EVAL_FILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/3eval/avec_filtre"
+# GRAPH_3EVAL_NFILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/3eval/sans_filtre"
+
+# GRAPH_NEVAL_FILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/sans_eval/avec_filtre"
+# GRAPH_NEVAL_NFILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/sans_eval/sans_filtre"
+
+# # Filtre eau et altitude
+# GRAPH_3EVAL_FILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/3eval/avec_filtre"
+# GRAPH_3EVAL_NFILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/3eval/sans_filtre"
+
+# GRAPH_NEVAL_FILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/sans_eval/avec_filtre"
+# GRAPH_NEVAL_NFILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/sans_eval/sans_filtre"
+
+# # Adresses stats résultats
+# RESULTS_STATS = f"/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/result_{N_QUANTILES}q"
+
+# # Adresse graphiques régression
+# REG_FILTRE = Path(f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/regression_params/regre_{N_QUANTILES}q/avec_filtre")
+# REG_NFILTRE = Path(f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/regression_params/regre_{N_QUANTILES}q/sans_filtre")
+# REG_ALPHA_BETA = Path("/Users/elena/Documents/These/Graphiques/analyse_radon/regression_alpha_beta")
+
+# # Data geopandas
+# NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"
+
+# # Data summary_all_peaks
+# NOM_SUMMARY = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/data/Summary_all_peaks.csv"
+
+
+# PRO
+#####
+
+DATA_ALL_BD = "/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_all_bd.json"
+DATA_EAU_ALT = "/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd/dict_eau_alt_bd.json"
 
 # Adresses aux produits 
-MAILLES = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/mailles")
-STRUCTURE_BD = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd")
-YAYB = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json/yAyB")
-JSON = Path("/Users/elena/Documents/These/GitHub/These_MF/radon_stats/json")    
+MAILLES = Path("/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/json/mailles")
+STRUCTURE_BD = Path("/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/json/structure_bd")
+YAYB = Path("/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/json/yAyB")
+JSON = Path("/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/json")
 
 # Adresses graphiques
 # Toutes stations de mesure
-GRAPH_3EVAL_FILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/3eval/avec_filtre"
-GRAPH_3EVAL_NFILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/3eval/sans_filtre"
+GRAPH_3EVAL_FILTRE = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/3eval/avec_filtre"
+GRAPH_3EVAL_NFILTRE = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/3eval/sans_filtre"
 
-GRAPH_NEVAL_FILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/sans_eval/avec_filtre"
-GRAPH_NEVAL_NFILTRE = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/sans_eval/sans_filtre"
+GRAPH_NEVAL_FILTRE = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/sans_eval/avec_filtre"
+GRAPH_NEVAL_NFILTRE = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/all_data/yAyB_{N_QUANTILES}q/sans_eval/sans_filtre"
 
 # Filtre eau et altitude
-GRAPH_3EVAL_FILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/3eval/avec_filtre"
-GRAPH_3EVAL_NFILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/3eval/sans_filtre"
+GRAPH_3EVAL_FILTRE_EA = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/3eval/avec_filtre"
+GRAPH_3EVAL_NFILTRE_EA = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/3eval/sans_filtre"
 
-GRAPH_NEVAL_FILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/sans_eval/avec_filtre"
-GRAPH_NEVAL_NFILTRE_EA = f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/sans_eval/sans_filtre"
+GRAPH_NEVAL_FILTRE_EA = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/sans_eval/avec_filtre"
+GRAPH_NEVAL_NFILTRE_EA = f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/aprox_dist/eau_alt/yAyB_{N_QUANTILES}q/sans_eval/sans_filtre"
 
 # Adresses stats résultats
-RESULTS_STATS = f"/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/result_{N_QUANTILES}q"
+RESULTS_STATS = f"/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/docs/result_{N_QUANTILES}q"
 
 # Adresse graphiques régression
-REG_FILTRE = Path(f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/regression_params/regre_{N_QUANTILES}q/avec_filtre")
-REG_NFILTRE = Path(f"/Users/elena/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/regression_params/regre_{N_QUANTILES}q/sans_filtre")
-
-REG_ALPHA_BETA = Path("/Users/elena/Documents/These/Graphiques/analyse_radon/regression_alpha_beta")
-
-# Adresses stats résultats
-RESULTS_STATS = f"/Users/elena/Documents/These/GitHub/These_MF/radon_stats/docs/result_{N_QUANTILES}q"
+REG_FILTRE = Path(f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/regression_params/regre_{N_QUANTILES}q/avec_filtre")
+REG_NFILTRE = Path(f"/home/solacavae/Documents/These/Graphiques/analyse_radon/delta_{DELTA}km/regression_params/regre_{N_QUANTILES}q/sans_filtre")
+REG_ALPHA_BETA = Path("/home/solacavae/Documents/These/Graphiques/analyse_radon/regression_alpha_beta")
 
 # Data geopandas
-NOM_CARTE = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/ne_110m_admin_0_countries.shp"
-# NOM_CARTE = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/ne_110m_admin_0_countries.shp"
+NOM_CARTE = "/home/solacavae/Documents/Thèse/GitHub/These_MF/ASNR/radon_stats/ne_110m_admin_0_countries.shp"
 
 # Data summary_all_peaks
-NOM_SUMMARY = "/Users/elena/Documents/These/GitHub/These_MF/radon_stats/data/Summary_all_peaks.csv"
+NOM_SUMMARY = "/home/solacavae/Documents/These/GitHub/These_MF/radon_stats/data/Summary_all_peaks.csv"
+
+########################
 
 # Chemins généraux
-BASE_DIR = Path(__file__).resolve().parent
-# Dossier graphiques
+# BASE_DIR = Path(__file__).resolve().parent
 
 ###########
 # ANALYSE #
