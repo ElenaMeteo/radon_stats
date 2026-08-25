@@ -1,3 +1,8 @@
 *.png 
-*.csv
+
 venv
+
+*.json
+!adresses_mac_eau_alt.json
+!adresses_mac_facil.json
+!adresses_mac.json
